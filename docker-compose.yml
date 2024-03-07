@@ -1,0 +1,64 @@
+version: '3.8'
+services:
+  web_server:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./volumes/api-barber:/var/www/html
+    container_name: web_server
+    environment:
+      - VIRTUAL_HOST=caixapreta.app
+      - LETSENCRYPT_HOST=caixapreta.app
+      - LETSENCRYPT_EMAIL=nicollasacruz@gmail.com
+      - VIRTUAL_PORT=8081
+    depends_on:
+      - php_api_barber
+    networks:
+      - network_api_barber
+      - reverse-proxy
+
+  php_api_barber:
+    container_name: php_api_barber
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./volumes/api-barber:/var/www/html
+    networks:
+      - network_api_barber
+
+  db_api_barber:
+    image: mariadb
+    environment:
+      - TZ=${TZ:-America/Sao_Paulo}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-dbpassword}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-api-barber}
+      - MYSQL_USER=${MYSQL_USER:-dbuser}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-dbpassword}
+    volumes:
+      - ./.docker/config/mysql:/etc/mysql/conf.d
+      - ./volumes/mysql/data:/var/lib/mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    networks:
+      - network_api_barber
+    
+  redis_api_barber:
+    image: redis:latest
+    restart: unless-stopped
+    networks:
+      - network_api_barber
+
+networks :
+  network_api_barber:
+    external: true
+    name: network_api_barber
+  reverse-proxy:
+    external: true
+    name: reverse-proxy
