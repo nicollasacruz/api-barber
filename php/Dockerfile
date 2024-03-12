@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install libzip-dev ca-certificates curl gnupg wget
 # RUN cd memcached-1.6.21
 # RUN ./configure make && make test && sudo make install
 
-RUN docker-php-ext-install pdo_mysql zip
+RUN docker-php-ext-install pdo_mysql zip sodium exif && docker-php-ext-enable pdo_mysql zip sodium exif
 
 # RUN mkdir -p /etc/apt/keyrings
 
