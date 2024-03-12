@@ -18,7 +18,7 @@ class BarbershopController extends Controller
 
         return response()->json([
             'status' => true,
-            'data' => Barbershop::all()
+            'data' => Barbershop::with('media')->get()
         ]);
     }
 
@@ -28,7 +28,7 @@ class BarbershopController extends Controller
     public function store(Request $request)
     {
         $this->authorize('store', Barbershop::class);
-    
+
         $request->validate([
             'name' => 'required|string|min:3|max:255|unique:barbershops',
             'icon' => 'required|image|max:1000000', // Limite de 25 MB
@@ -36,15 +36,15 @@ class BarbershopController extends Controller
             'mail' => 'required|email|max:100',
             'address' => 'required|max:200',
         ]);
-    
+
         $icon = $request->file('icon');
         $icon_name = $request->name . '_icon_image.' . $icon->getClientOriginalExtension();
         $icon->storeAs('public/images/barbershops', $icon_name); // Armazenar imagem
-    
+
         $cover_image = $request->file('cover_image');
         $cover_image_name = $request->name . '_cover_image.' . $cover_image->getClientOriginalExtension();
         $cover_image->storeAs('public/images/barbershops', $cover_image_name); // Armazenar imagem
-    
+
         $barbershop = Barbershop::create([
             'name' => $request->name,
             'mail' => $request->mail,
@@ -52,21 +52,21 @@ class BarbershopController extends Controller
             'icon' => 'app/public/images/barbershops/' . $icon_name,
             'cover_image' => 'app/public/images/barbershops/' . $cover_image_name,
         ]);
-    
+
         $barbershop
             ->addMedia(storage_path('app/public/images/barbershops/' . $icon_name)) // Adicionar mídia ao barbershop
             ->toMediaCollection('icon');
-    
+
         $barbershop
             ->addMedia(storage_path('app/public/images/barbershops/' . $cover_image_name)) // Adicionar mídia ao barbershop
             ->toMediaCollection('cover_image');
-    
+
         return response()->json([
             'status' => true,
             'data' => $barbershop,
         ]);
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -85,53 +85,61 @@ class BarbershopController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Barbershop $barbershop)
-{
-    dump($request->all(), $barbershop);
-    // $request->user()->can("update", $barbershop);
+    {
+        dump($request->all(), $barbershop);
+        // $request->user()->can("update", $barbershop);
 
 
-    $request->validate([
-        'name' => 'required|string|min:4|max:255|unique:barbershops,name,' . $barbershop->id,
-        'icon' => 'image|max:1000000',
-        'cover_image' => 'image|max:1000000',
-        'mail' => 'required|string|max:100',
-        'address' => 'required',
-    ]);
+        $request->validate([
+            'name' => 'required|string|min:4|max:255|unique:barbershops,name,' . $barbershop->id,
+            'icon' => 'image|max:1000000',
+            'cover_image' => 'image|max:1000000',
+            'mail' => 'required|string|max:100',
+            'address' => 'required',
+        ]);
 
-    if ($request->hasFile('icon')) {
-        $icon = $request->file('icon');
-        $icon_name = $request->name . '_icon_image.' . $icon->getClientOriginalExtension();
-        $icon->storeAs('public/images/barbershops', $icon_name);
+        if ($request->hasFile('icon')) {
+            if ($barbershop->getFirstMedia('icon')) {
+                $barbershop->getFirstMedia('icon')->delete();
+            }
 
-        if ($barbershop->getFirstMedia('icon')) {
-            $barbershop->getFirstMedia('icon')->delete();
+            $icon = $request->file('icon');
+            $icon_name = $request->name . '_icon_image.' . $icon->getClientOriginalExtension();
+            $icon->storeAs('public/images/barbershops', $icon_name); // Armazenar imagem
+
+            $barbershop
+            ->addMedia(storage_path('app/public/images/barbershops/' . $icon_name)) // Adicionar mídia ao barbershop
+            ->toMediaCollection('icon');
+            $barbershop->icon = 'public/images/barbershops/' . $icon_name;
         }
 
-        $barbershop->icon = 'public/images/barbershops/' . $icon_name;
-    }
+        if ($request->hasFile('cover_image')) {
 
-    if ($request->hasFile('cover_image')) {
-        $cover_image = $request->file('cover_image');
-        $cover_image_name = $request->name . '_cover_image.' . $cover_image->getClientOriginalExtension();
-        $cover_image->storeAs('public/images/barbershops', $cover_image_name);
+            if ($barbershop->getFirstMedia('cover_image')) {
+                $barbershop->getFirstMedia('cover_image')->delete();
+            }
+            
+            $cover_image = $request->file('cover_image');
+            $cover_image_name = $request->name . '_cover_image.' . $cover_image->getClientOriginalExtension();
+            $cover_image->storeAs('public/images/barbershops', $cover_image_name); // Armazenar imagem
 
-        if ($barbershop->getFirstMedia('cover_image')) {
-            $barbershop->getFirstMedia('cover_image')->delete();
+            $barbershop
+                ->addMedia(storage_path('app/public/images/barbershops/' . $cover_image_name)) // Adicionar mídia ao barbershop
+                ->toMediaCollection('cover_image');
+
+            $barbershop->cover_image = 'public/images/barbershops/' . $cover_image_name;
         }
 
-        $barbershop->cover_image = 'public/images/barbershops/' . $cover_image_name;
+        $barbershop->name = $request->name;
+        $barbershop->mail = $request->mail;
+        $barbershop->address = $request->address;
+        $barbershop->save();
+
+        return response()->json([
+            'status' => true,
+            'data' => 'Barbershop updated successfully',
+        ]);
     }
-
-    $barbershop->name = $request->name;
-    $barbershop->mail = $request->mail;
-    $barbershop->address = $request->address;
-    $barbershop->save();
-
-    return response()->json([
-        'status' => true,
-        'data' => 'Barbershop updated successfully',
-    ]);
-}
 
 
     /**
