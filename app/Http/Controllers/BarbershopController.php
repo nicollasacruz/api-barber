@@ -107,7 +107,7 @@ class BarbershopController extends Controller
             $barbershop->getFirstMedia('icon')->delete();
         }
 
-        $barbershop->icon = 'images/barbershops/' . $icon_name;
+        $barbershop->icon = 'public/images/barbershops/' . $icon_name;
     }
 
     if ($request->hasFile('cover_image')) {
@@ -119,7 +119,7 @@ class BarbershopController extends Controller
             $barbershop->getFirstMedia('cover_image')->delete();
         }
 
-        $barbershop->cover_image = 'images/barbershops/' . $cover_image_name;
+        $barbershop->cover_image = 'public/images/barbershops/' . $cover_image_name;
     }
 
     $barbershop->name = $request->name;
