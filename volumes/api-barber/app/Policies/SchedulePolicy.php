@@ -31,8 +31,10 @@ class SchedulePolicy
      */
     public function show(User $user, Schedule $schedule): bool
     {
-        return $user->hasRole('admin') ||
-            ;
+        return $user->hasRole('admin') || 
+            ($user->hasRole('manager') && $schedule->barbershop->manager->id === $user->id) ||
+            ($user->hasRole('recepcionist') && $schedule->barbershop->recepcionist->id === $user->id) ||
+            $schedule->client->id === $user->id;
     }
 
     /**
