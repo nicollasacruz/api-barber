@@ -41,4 +41,31 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    public function admin()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role' => ['admin'],
+            ];
+        });
+    }
+
+    public function manager()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role' => ['manager'],
+            ];
+        });
+    }
+
+    public function recepcionist()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role' => ['recepcionist'],
+            ];
+        });
+    }
 }

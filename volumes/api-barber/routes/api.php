@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarbershopController;
 use App\Http\Controllers\ScheduleController;
+use App\Models\Barbershop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,10 +34,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [BarbershopController::class, 'index']);
         Route::post('/', [BarbershopController::class, 'store']);
         Route::get('/{barbershop}', [BarbershopController::class, 'show']);
-        Route::patch('/{barbershop}', [BarbershopController::class, 'update']);
-        Route::delete('/{barbershop}', [BarbershopController::class, 'destroy']);
-        Route::delete('/forceDelete/{barbershop}', [BarbershopController::class, 'forceDestroy']);
-        Route::post('/restore/{barbershop}', [BarbershopController::class, 'restore']);
+        Route::patch('/{barbershop}', [BarbershopController::class, 'update'])->can('update', 'barbershop');
+        Route::delete('/{barbershop}', [BarbershopController::class, 'destroy'])->can('destroy', 'barbershop');
+        Route::delete('/forceDelete/{barbershop}', [BarbershopController::class, 'forceDestroy'])->can('forceDestroy', 'barbershop');
+        Route::post('/restore/{barbershop}', [BarbershopController::class, 'restore'])->can('restore', 'barbershop');
     });
     Route::prefix('schedules')->group(function () {
         Route::get('/', [ScheduleController::class, 'index']);

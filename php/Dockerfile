@@ -13,6 +13,12 @@ RUN apt install libsodium-dev
 
 RUN docker-php-ext-install pdo_mysql zip sodium exif && docker-php-ext-enable pdo_mysql zip sodium exif
 
+RUN pecl install -o -f xdebug-3 \
+    && docker-php-ext-enable xdebug
+
+# Copy php.ini
+COPY ./php.ini /usr/local/etc/php/
+
 # RUN mkdir -p /etc/apt/keyrings
 
 # RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
