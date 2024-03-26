@@ -32,8 +32,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/barbershops/{barbershop}', [BarbershopController::class, 'show']);
     Route::post('/barbershops', [BarbershopController::class, 'store']);
     Route::patch('/barbershops/{barbershop}', [BarbershopController::class, 'update']);
-    Route::delete('/barbershops/{barbershop}', [BarbershopController::class, 'destroy']);
-
-    Route::get('/barbershops/{barbershop}/icon', [BarbershopController::class, 'getIcon']);
-    Route::get('/barbershops/{barbershop}/cover-image', [BarbershopController::class, 'getCoverImage']);
+    Route::delete('/barbershops/{barbershop}', [BarbershopController::class, 'destroy'])->can('destroy', 'barbershop');
 });

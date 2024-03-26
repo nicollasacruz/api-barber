@@ -31,19 +31,19 @@ class BarbershopController extends Controller
 
         $request->validate([
             'name' => 'required|string|min:3|max:255|unique:barbershops',
-            'icon' => 'required|image|max:1000000', // Limite de 25 MB
-            'cover_image' => 'required|image|max:1000000', // Limite de 25 MB
+            'icon' => 'required|image|max:1000000',
+            'cover_image' => 'required|image|max:1000000',
             'mail' => 'required|email|max:100',
             'address' => 'required|max:200',
         ]);
 
         $icon = $request->file('icon');
         $icon_name = $request->name . '_icon_image.' . $icon->getClientOriginalExtension();
-        $icon->storeAs('public/images/barbershops', $icon_name); // Armazenar imagem
+        $icon->storeAs('public/images/barbershops', $icon_name);
 
         $cover_image = $request->file('cover_image');
         $cover_image_name = $request->name . '_cover_image.' . $cover_image->getClientOriginalExtension();
-        $cover_image->storeAs('public/images/barbershops', $cover_image_name); // Armazenar imagem
+        $cover_image->storeAs('public/images/barbershops', $cover_image_name);
 
         $barbershop = Barbershop::create([
             'name' => $request->name,
@@ -54,16 +54,16 @@ class BarbershopController extends Controller
         ]);
 
         $barbershop
-            ->addMedia(storage_path('app/public/images/barbershops/' . $icon_name)) // Adicionar mídia ao barbershop
+            ->addMedia(storage_path('app/public/images/barbershops/' . $icon_name))
             ->toMediaCollection('icon');
 
         $barbershop
-            ->addMedia(storage_path('app/public/images/barbershops/' . $cover_image_name)) // Adicionar mídia ao barbershop
+            ->addMedia(storage_path('app/public/images/barbershops/' . $cover_image_name))
             ->toMediaCollection('cover_image');
 
         return response()->json([
             'status' => true,
-            'data' => $barbershop,
+            'message' => 'Barbershop created successfully',
         ]);
     }
 
@@ -86,9 +86,7 @@ class BarbershopController extends Controller
      */
     public function update(Request $request, Barbershop $barbershop)
     {
-        dump($request->all(), $barbershop);
-        // $request->user()->can("update", $barbershop);
-
+        $request->user()->can("update", $barbershop);
 
         $request->validate([
             'name' => 'required|string|min:4|max:255|unique:barbershops,name,' . $barbershop->id,
@@ -105,10 +103,10 @@ class BarbershopController extends Controller
 
             $icon = $request->file('icon');
             $icon_name = $request->name . '_icon_image.' . $icon->getClientOriginalExtension();
-            $icon->storeAs('public/images/barbershops', $icon_name); // Armazenar imagem
+            $icon->storeAs('public/images/barbershops', $icon_name);
 
             $barbershop
-            ->addMedia(storage_path('app/public/images/barbershops/' . $icon_name)) // Adicionar mídia ao barbershop
+            ->addMedia(storage_path('app/public/images/barbershops/' . $icon_name))
             ->toMediaCollection('icon');
             $barbershop->icon = 'public/images/barbershops/' . $icon_name;
         }
@@ -118,13 +116,13 @@ class BarbershopController extends Controller
             if ($barbershop->getFirstMedia('cover_image')) {
                 $barbershop->getFirstMedia('cover_image')->delete();
             }
-            
+
             $cover_image = $request->file('cover_image');
             $cover_image_name = $request->name . '_cover_image.' . $cover_image->getClientOriginalExtension();
-            $cover_image->storeAs('public/images/barbershops', $cover_image_name); // Armazenar imagem
+            $cover_image->storeAs('public/images/barbershops', $cover_image_name);
 
             $barbershop
-                ->addMedia(storage_path('app/public/images/barbershops/' . $cover_image_name)) // Adicionar mídia ao barbershop
+                ->addMedia(storage_path('app/public/images/barbershops/' . $cover_image_name))
                 ->toMediaCollection('cover_image');
 
             $barbershop->cover_image = 'public/images/barbershops/' . $cover_image_name;
@@ -137,7 +135,7 @@ class BarbershopController extends Controller
 
         return response()->json([
             'status' => true,
-            'data' => 'Barbershop updated successfully',
+            'message' => 'Barbershop updated successfully',
         ]);
     }
 
@@ -145,35 +143,13 @@ class BarbershopController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Barbershop $barbershop)
+    public function destroy(Barbershop $barbershop, Request $request)
     {
-        $this->authorize('destroy', Barbershop::class);
-
         $barbershop->delete();
 
         return response()->json([
             'status' => true,
-            'data' => 'Barbershop deleted successfully',
+            'message' => 'Barbershop deleted successfully',
         ]);
-    }
-
-    public function getIcon(Barbershop $barbershop)
-    {
-        $media = $barbershop->getFirstMedia('icon');
-        if (!$media) {
-            abort(404);
-        }
-
-        return response()->file(Storage::path($media->getPath()));
-    }
-
-    public function getCoverImage(Barbershop $barbershop)
-    {
-        $media = $barbershop->getFirstMedia('cover_image');
-        if (!$media) {
-            abort(404);
-        }
-
-        return response()->file(Storage::path($media->getPath()));
     }
 }
