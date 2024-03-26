@@ -2,14 +2,14 @@ version: '3.8'
 
 services:
 
-  web_server:
+  web_server_barber:
     build:
       context: ./nginx
       dockerfile: Dockerfile
     restart: unless-stopped
     volumes:
       - ./volumes/api-barber:/var/www/html
-    container_name: web_server
+    container_name: web_server_barber
     ports:
       - "8080:8080"
     depends_on:
