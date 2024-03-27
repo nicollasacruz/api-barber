@@ -15,15 +15,18 @@ return new class extends Migration
             $table->id();
             $table->float('amount')->default(0);
             $table->string('status')->default('scheduled');
-            $table->unsignedBigInteger('barbershop_id')->nullable();
-            $table->unsignedBigInteger('barber_id')->nullable();
-            $table->unsignedBigInteger('client_id')->nullable();
+            $table->unsignedBigInteger('barbershop_id');
+            $table->foreign('barbershop_id')->references('id')->on('barbershops');
+
+            $table->unsignedBigInteger('barber_id');
+            $table->foreign('barber_id')->references('id')->on('users');
+
+            $table->unsignedBigInteger('client_id');
+            $table->foreign('client_id')->references('id')->on('users');
+        
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             
-            $table->foreign('barbershop_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('barber_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('client_id')->references('id')->on('users')->onDelete('set null');
             
             $table->timestamps();
             $table->softDeletes();

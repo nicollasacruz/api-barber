@@ -24,7 +24,7 @@ class Schedule extends Model
 
     public function barbershop(): BelongsTo
     {
-        return $this->belongsTo(Barbershop::class);
+        return $this->belongsTo(Barbershop::class, 'barbershop_id', 'id');
     }
 
     public function barber(): BelongsTo

@@ -51,16 +51,16 @@ class Barbershop extends Model implements HasMedia
 
     public function receptionist(): HasOne
     {
-        return $this->hasOne(User::class, 'id', 'receptionist_id');
+        return $this->hasOne(User::class, 'receptionist_id', 'id');
     }
 
     public function manager(): HasOne
     {
-        return $this->hasOne(User::class,  'id', 'manager_id');
+        return $this->hasOne(User::class, 'manager_id', 'id');
     }
 
     public function schedules(): HasMany
     {
-        return $this->hasMany(Schedule::class);
+        return $this->hasMany(Schedule::class, 'barbershop_id', 'id');
     }
 }
