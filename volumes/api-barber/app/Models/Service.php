@@ -39,7 +39,7 @@ class Service extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function services(): belongsToMany
+    public function schedules(): belongsToMany
     {
         return $this->belongsToMany(Schedule::class);
     }

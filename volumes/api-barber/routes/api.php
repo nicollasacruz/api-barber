@@ -39,12 +39,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/forceDelete/{barbershop}', [BarbershopController::class, 'forceDestroy'])->can('forceDestroy', 'barbershop');
         Route::post('/restore/{barbershop}', [BarbershopController::class, 'restore'])->can('restore', 'barbershop');
     });
-    Route::prefix('schedules')->group(function () {
+    Route::prefix('/schedules')->group(function () {
         Route::get('/', [ScheduleController::class, 'index']);
         Route::post('/', [ScheduleController::class, 'store']);
         Route::get('/{schedule}', [ScheduleController::class, 'show']);
         Route::patch('/{schedule}', [ScheduleController::class, 'update']);
-        Route::delete('/{schedule}', [ScheduleController::class, 'destroy'])->can('destroy', 'schedule');
+        Route::delete('/{schedule}', [ScheduleController::class, 'destroy'])->can('destroy', ['schedule', 'barbershop']);
         Route::delete('/forceDelete/{schedule}', [ScheduleController::class, 'forceDestroy']);
         Route::post('/restore/{schedule}', [ScheduleController::class, 'restore']);
     });

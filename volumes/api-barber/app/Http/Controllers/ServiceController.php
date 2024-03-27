@@ -25,7 +25,7 @@ class ServiceController extends Controller
             'description' => 'string|min:3|max:255',
             'icon' => 'image|max:1000000',
             'price' => 'required|numeric|between:0,999999.99',
-            'address' => 'required|max:200',
+            'barbershop_id' => 'required|integer|min:1',
         ]);
 
         $icon = $request->file('icon');
@@ -36,15 +36,17 @@ class ServiceController extends Controller
 
         }
         $service = Service::create([
+            'barbershop_id' => $request->barbershop_id,
             'name' => $request->name,
             'description' => $request->mail,
             'price' => $request->address,
             'icon' => $icon ? 'app/public/images/services/' . $icon_name : '',
         ]);
+
         if ($icon && $cover_image) {
             $service
                 ->addMedia(storage_path('app/public/images/services/' . $icon_name))
-                ->toMediaCollection('icon');
+                ->toMediaCollection('services');
         }
         return response()->json([
             'status' => true,
