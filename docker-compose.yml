@@ -29,6 +29,36 @@ services:
       - ./volumes/api-barber:/var/www/html
     networks:
       - network_api_barber
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: db_dino
+      PMA_PORT: 3306
+    ports:
+      - "9008:80"
+    depends_on:
+      - db_api_barber
+    networks:
+      - network_api_barber
+
+  db_api_barber:
+    image: mariadb
+    environment:
+      - TZ=${TZ:-America/Sao_Paulo}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-dbpassword}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-api-barber}
+      - MYSQL_USER=${MYSQL_USER:-dbuser}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-dbpassword}
+    volumes:
+      - ./.docker/config/mysql:/etc/mysql/conf.d
+      - ./volumes/mysql/data:/var/lib/mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    networks:
+      - network_api_barber
     
   redis_api_barber:
     image: redis:latest
