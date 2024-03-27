@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barbershop;
 use App\Models\Schedule;
+use App\Models\Service;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -10,7 +12,7 @@ class ScheduleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Barbershop $barbershop)
     {
         $this->authorize('showCollection', Schedule::class);
 
@@ -23,7 +25,7 @@ class ScheduleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Barbershop $barbershop)
     {
         $this->authorize('store', Schedule::class);
 
@@ -34,21 +36,33 @@ class ScheduleController extends Controller
             'barbershop_id' => 'required|numeric',
             'barber_id' => 'required|numeric',
             'client_id' => 'required|numeric',
+            'services' => ['required', 'array', function ($attribute, $value, $fail) {
+                $existingServiceIds = Service::pluck('id')->toArray();
+                foreach ($value as $serviceId) {
+                    if (!in_array($serviceId, $existingServiceIds)) {
+                        $fail("The selected service with ID $serviceId does not exist.");
+                    }
+                }
+            }],
         ]);
 
+        $services = $request->services;
         $schedule = Schedule::create([
             'amount' => $request->amount,
             'status' => 'scheduled',
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
-            'barbershop_id' => $request->barbershop_id,
+            'barbershop_id' => $barbershop->id,
             'barber_id' => $request->barber_id,
             'client_id' => $request->client_id,
         ]);
 
+        $schedule->services()->attach($services);
+
         return response()->json([
             'status' => true,
             'message' => 'Schedule created successfully',
+            'data' => $schedule,
         ]);
     }
 
@@ -61,6 +75,7 @@ class ScheduleController extends Controller
 
         return response()->json([
             'status' => true,
+            'message' => 'Show scheduled resource successfully',
             'data' => $schedule,
         ]);
     }
@@ -84,6 +99,7 @@ class ScheduleController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Schedule updated successfully',
+            'data' => $schedule,
         ]);
     }
 
@@ -94,11 +110,15 @@ class ScheduleController extends Controller
     {
         $request->user()->can("destroy", $schedule);
 
+        $schedule->status === 'scheduled';
+        $schedule->save();
+
         $schedule->delete();
 
         return response()->json([
             'status' => true,
             'message' => 'Schedule deleted successfully',
+            'data' => [],
         ]);
     }
 
@@ -109,11 +129,15 @@ class ScheduleController extends Controller
     {
         $request->user()->can("restore", $schedule);
 
-        $schedule->delete();
+        $schedule->restore();
+
+        $schedule->status === 'scheduled';
+        $schedule->save();
 
         return response()->json([
             'status' => true,
             'message' => 'Schedule restored successfully',
+            'data' => $schedule,
         ]);
     }
 

@@ -18,12 +18,11 @@ class SchedulePolicy
 
     public function showCollection(User $user, Schedule $schedule): bool
     {
-        return 
-            $user->hasRole('admin') || 
+        return
+            $user->hasRole('admin') ||
             ($user->hasRole('manager') && $schedule->barbershop->manager->id === $user->id) ||
             ($user->hasRole('recepcionist') && $schedule->barbershop->recepcionist->id === $user->id) ||
-            $schedule->client->id === $user->id
-        ;
+            $schedule->client->id === $user->id;
     }
 
     /**
@@ -31,7 +30,7 @@ class SchedulePolicy
      */
     public function show(User $user, Schedule $schedule): bool
     {
-        return $user->hasRole('admin') || 
+        return $user->hasRole('admin') ||
             ($user->hasRole('manager') && $schedule->barbershop->manager->id === $user->id) ||
             ($user->hasRole('recepcionist') && $schedule->barbershop->recepcionist->id === $user->id) ||
             $schedule->client->id === $user->id;
@@ -42,7 +41,7 @@ class SchedulePolicy
      */
     public function store(User $user): bool
     {
-        return $user->hasRole('admin');
+        return true;
     }
 
     /**
@@ -51,7 +50,9 @@ class SchedulePolicy
     public function update(User $user, Schedule $schedule): bool
     {
         return $user->hasRole('admin') ||
-            ($user->hasRole('manager') && $schedule->manager->id === $user->id);
+            ($user->hasRole('manager') && $schedule->barbershop->manager->id === $user->id) ||
+            ($user->hasRole('recepcionist') && $schedule->barbershop->recepcionist->id === $user->id) ||
+            $schedule->client->id === $user->id;
     }
 
     /**
@@ -59,7 +60,10 @@ class SchedulePolicy
      */
     public function destroy(User $user, Schedule $schedule): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole('admin') ||
+            ($user->hasRole('manager') && $schedule->barbershop->manager->id === $user->id) ||
+            ($schedule->status === 'scheduled' && $user->hasRole('recepcionist') && $schedule->barbershop->recepcionist->id === $user->id) ||
+            $schedule->client->id === $user->id;
     }
 
     /**

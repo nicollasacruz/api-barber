@@ -21,9 +21,7 @@ class BarbershopPolicy
      */
     public function show(User $user, Barbershop $barbershop): bool
     {
-        return $user->hasRole('admin') ||
-            ($user->hasRole('manager') && $barbershop->manager->id === $user->id) ||
-            ($user->hasRole('recepcionist') && $barbershop->recepcionist->id === $user->id);
+        return true;
     }
 
     /**
