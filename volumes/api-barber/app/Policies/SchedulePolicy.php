@@ -69,7 +69,7 @@ class SchedulePolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Schedule $schedule): bool
+    public function restore(User $user): bool
     {
         return $user->hasRole('admin');
     }
@@ -77,7 +77,7 @@ class SchedulePolicy
     /**
      * Determine whether the user can permanently destroy the model.
      */
-    public function forceDestroy(User $user, Schedule $schedule): bool
+    public function forceDestroy(User $user): bool
     {
         return $user->hasRole('admin');
     }
