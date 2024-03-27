@@ -3,16 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barbershop;
+use App\Services\BarbershopService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class BarbershopController extends Controller
 {
+    private BarbershopService $barbershopService;
+
+    public function __construct(BarbershopService $barbershopService)
+    {
+        $this->barbershopService = $barbershopService;
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $this->authorize('showAny', Barbershop::class);
 
@@ -25,7 +34,7 @@ class BarbershopController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $this->authorize('store', Barbershop::class);
 
@@ -37,34 +46,11 @@ class BarbershopController extends Controller
             'address' => 'required|max:200',
         ]);
 
-        $icon = $request->file('icon');
-        $cover_image = $request->file('cover_image');
-        if ($icon && $cover_image) {
-            $icon_name = $request->name . '_icon_image.' . $icon->getClientOriginalExtension();
-            $icon->storeAs('public/images/barbershops', $icon_name);
+        $barbershop = $this->barbershopService::store($request);
 
-            $cover_image_name = $request->name . '_cover_image.' . $cover_image->getClientOriginalExtension();
-            $cover_image->storeAs('public/images/barbershops', $cover_image_name);
-        }
-        $barbershop = Barbershop::create([
-            'name' => $request->name,
-            'mail' => $request->mail,
-            'address' => $request->address,
-            'icon' => $icon ? 'app/public/images/barbershops/' . $icon_name : '',
-            'cover_image' => $cover_image ? 'app/public/images/barbershops/' . $cover_image_name : '',
-        ]);
-        if ($icon && $cover_image) {
-            $barbershop
-                ->addMedia(storage_path('app/public/images/barbershops/' . $icon_name))
-                ->toMediaCollection('icon');
-
-            $barbershop
-                ->addMedia(storage_path('app/public/images/barbershops/' . $cover_image_name))
-                ->toMediaCollection('cover_image');
-        }
         return response()->json([
-            'status' => true,
-            'message' => 'Barbershop created successfully',
+            'status' => $barbershop['status'],
+            'message' => $barbershop['message'],
         ]);
     }
 
@@ -72,7 +58,7 @@ class BarbershopController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, Barbershop $barbershop)
+    public function show(Request $request, Barbershop $barbershop): JsonResponse
     {
         $request->user()->can("show", $barbershop);
 
@@ -85,7 +71,7 @@ class BarbershopController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Barbershop $barbershop)
+    public function update(Request $request, Barbershop $barbershop): JsonResponse
     {
         // $request->user()->can("update", $barbershop);
 
@@ -97,46 +83,11 @@ class BarbershopController extends Controller
             'address' => 'string|max:250',
         ]);
 
-        if ($request->hasFile('icon')) {
-            if ($barbershop->getFirstMedia('icon')) {
-                $barbershop->getFirstMedia('icon')->delete();
-            }
-
-            $icon = $request->file('icon');
-            $icon_name = $request->name . '_icon_image.' . $icon->getClientOriginalExtension();
-            $icon->storeAs('public/images/barbershops', $icon_name);
-
-            $barbershop
-                ->addMedia(storage_path('app/public/images/barbershops/' . $icon_name))
-                ->toMediaCollection('icon');
-            $barbershop->icon = 'public/images/barbershops/' . $icon_name;
-        }
-
-        if ($request->hasFile('cover_image')) {
-
-            if ($barbershop->getFirstMedia('cover_image')) {
-                $barbershop->getFirstMedia('cover_image')->delete();
-            }
-
-            $cover_image = $request->file('cover_image');
-            $cover_image_name = $request->name . '_cover_image.' . $cover_image->getClientOriginalExtension();
-            $cover_image->storeAs('public/images/barbershops', $cover_image_name);
-
-            $barbershop
-                ->addMedia(storage_path('app/public/images/barbershops/' . $cover_image_name))
-                ->toMediaCollection('cover_image');
-
-            $barbershop->cover_image = 'public/images/barbershops/' . $cover_image_name;
-        }
-
-        $barbershop->name = $request->name;
-        $barbershop->mail = $request->mail;
-        $barbershop->address = $request->address;
-        $barbershop->save();
+        $barbershopResult = $this->barbershopService::update($request, $barbershop);
 
         return response()->json([
-            'status' => true,
-            'message' => 'Barbershop updated successfully',
+            'status' => $barbershopResult['status'],
+            'message' => $barbershopResult['message'],
         ]);
     }
 
@@ -144,7 +95,7 @@ class BarbershopController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Barbershop $barbershop, Request $request)
+    public function destroy(Barbershop $barbershop, Request $request): JsonResponse
     {
         $request->user()->can("destroy", $barbershop);
 
@@ -159,7 +110,7 @@ class BarbershopController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function restore(Barbershop $barbershop, Request $request)
+    public function restore(Barbershop $barbershop, Request $request): JsonResponse
     {
         $request->user()->can("restore", $barbershop);
 
@@ -174,7 +125,7 @@ class BarbershopController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function forceDestroy(Barbershop $barbershop, Request $request)
+    public function forceDestroy(Barbershop $barbershop, Request $request): JsonResponse
     {
         $request->user()->can("forceDestroy", $barbershop);
 
