@@ -55,8 +55,6 @@ services:
       - ./.docker/config/mysql:/etc/mysql/conf.d
       - ./volumes/mysql/data:/var/lib/mysql
     restart: unless-stopped
-    ports:
-      - "3306:3306"
     networks:
       - network_api_barber
     
