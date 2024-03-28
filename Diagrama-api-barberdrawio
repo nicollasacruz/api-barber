@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-03-28T13:13:17.598Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15" etag="hmb1tfdY3aUe7z3OKkZw" version="24.2.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-28T13:28:35.093Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15" etag="TGAwsJxNehn-BXjvI_RG" version="24.2.0" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="699" dy="426" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -71,11 +71,11 @@
         <mxCell id="MjFSmDIg5Qm6kAtnbqlG-15" value="Make a GET for&lt;div&gt;/api/v1/barbershops&lt;br&gt;&lt;/div&gt;&lt;div&gt;and get all barbershops&lt;/div&gt;&lt;div&gt;and barbers&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
           <mxGeometry x="372" y="110" width="160" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="MjFSmDIg5Qm6kAtnbqlG-18" value="Make a GET for&lt;div&gt;/api/v1/barber/{id}&lt;br&gt;&lt;/div&gt;&lt;div&gt;and get barber services available &amp;nbsp;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="372" y="270" width="160" height="60" as="geometry" />
+        <mxCell id="MjFSmDIg5Qm6kAtnbqlG-18" value="Make a GET for&lt;div&gt;/api/v1/barbershops/{barbershop_id}barber/{barber_id}&lt;/div&gt;&lt;div&gt;and get barber services available &amp;nbsp;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="372" y="270" width="288" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="MjFSmDIg5Qm6kAtnbqlG-19" value="Make a GET for&lt;div&gt;/api/v1/barbershops/{id}/barbers&lt;br&gt;&lt;/div&gt;&lt;div&gt;and get all barbers&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="372" y="190" width="170" height="60" as="geometry" />
+        <mxCell id="MjFSmDIg5Qm6kAtnbqlG-19" value="Make a GET for&lt;div&gt;/api/v1/barbershops/{barbershop_id}/barbers&lt;/div&gt;&lt;div&gt;and get all barbers&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="372" y="190" width="258" height="60" as="geometry" />
         </mxCell>
         <mxCell id="MjFSmDIg5Qm6kAtnbqlG-23" value="Make a POST for&lt;div&gt;/api/v1/barber/{id}/getAvailableSchedule&lt;br&gt;&lt;/div&gt;&lt;div&gt;with body {date: now(y-m-d), duration: minute} and get barber schedules available &amp;nbsp;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
           <mxGeometry x="372" y="350" width="228" height="60" as="geometry" />
