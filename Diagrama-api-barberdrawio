@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-03-28T15:05:37.315Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15" etag="hZOCfQpeNHyK8IUJ0KvW" version="24.2.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-28T18:09:20.122Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15" etag="ww0kwRnuPA5UiWueKCtb" version="24.2.0" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="699" dy="426" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -65,20 +65,20 @@
         <mxCell id="MjFSmDIg5Qm6kAtnbqlG-10" value="Choose barbershop" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
           <mxGeometry x="160" y="120" width="120" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="MjFSmDIg5Qm6kAtnbqlG-13" value="&lt;div style=&quot;font-size: 9px;&quot;&gt;&lt;font style=&quot;font-size: 9px;&quot;&gt;Make a POST for /api/v1/auth/login&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 9px;&quot;&gt;&lt;font style=&quot;font-size: 9px;&quot;&gt;or&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 9px;&quot;&gt;&lt;font style=&quot;font-size: 9px;&quot;&gt;/api/v1/auth/register&lt;/font&gt;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;align=center;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="372" y="30" width="160" height="60" as="geometry" />
+        <mxCell id="MjFSmDIg5Qm6kAtnbqlG-13" value="&lt;div style=&quot;font-size: 9px;&quot;&gt;&lt;font style=&quot;font-size: 9px;&quot;&gt;Make a POST for&amp;nbsp;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 9px;&quot;&gt;&lt;font style=&quot;font-size: 9px;&quot;&gt;/api/v1/auth/login&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 9px;&quot;&gt;&lt;font style=&quot;font-size: 9px;&quot;&gt;or&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 9px;&quot;&gt;&lt;font style=&quot;font-size: 9px;&quot;&gt;/api/v1/auth/register&lt;/font&gt;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;align=center;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="372" y="30" width="288" height="60" as="geometry" />
         </mxCell>
         <mxCell id="MjFSmDIg5Qm6kAtnbqlG-15" value="Make a GET for&lt;div&gt;/api/v1/barbershops&lt;br&gt;&lt;/div&gt;&lt;div&gt;and get all barbershops&lt;/div&gt;&lt;div&gt;and barbers&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="372" y="110" width="160" height="60" as="geometry" />
+          <mxGeometry x="372" y="110" width="288" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="MjFSmDIg5Qm6kAtnbqlG-18" value="Make a GET for&lt;div&gt;/api/v1/barbershops/{barbershop_id}barber/{barber_id}&lt;/div&gt;&lt;div&gt;and get barber services available &amp;nbsp;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+        <mxCell id="MjFSmDIg5Qm6kAtnbqlG-18" value="Make a GET for&lt;div&gt;/api/v1/barbershops/{barbershop_id}/barber/{barber_id}&lt;/div&gt;&lt;div&gt;and get barber services available &amp;nbsp;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
           <mxGeometry x="372" y="270" width="288" height="60" as="geometry" />
         </mxCell>
         <mxCell id="MjFSmDIg5Qm6kAtnbqlG-19" value="Make a GET for&lt;div&gt;/api/v1/barbershops/{barbershop_id}/barbers&lt;/div&gt;&lt;div&gt;and get all barbers&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="372" y="190" width="258" height="60" as="geometry" />
+          <mxGeometry x="372" y="190" width="288" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="MjFSmDIg5Qm6kAtnbqlG-23" value="Make a POST for&lt;div&gt;/api/v1/barber/{id}/getAvailableSchedule&lt;br&gt;&lt;/div&gt;&lt;div&gt;with body {date: now(y-m-d), duration: minute} and get barber schedules available &amp;nbsp;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="372" y="350" width="288" height="60" as="geometry" />
+        <mxCell id="MjFSmDIg5Qm6kAtnbqlG-23" value="Make a POST for&lt;div&gt;/api/v1/barbershops/{barbershop_id}/barber/{id}/getAvailableSchedule&lt;/div&gt;&lt;div&gt;with body {date: now(y-m-d), duration: minute}&lt;/div&gt;&lt;div&gt;and get barber schedules available &amp;nbsp;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="372" y="350" width="368" height="60" as="geometry" />
         </mxCell>
         <mxCell id="MjFSmDIg5Qm6kAtnbqlG-28" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="MjFSmDIg5Qm6kAtnbqlG-25" target="MjFSmDIg5Qm6kAtnbqlG-27">
           <mxGeometry relative="1" as="geometry" />
@@ -87,7 +87,7 @@
           <mxGeometry x="160" y="440" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="MjFSmDIg5Qm6kAtnbqlG-27" value="Make a POST for&lt;div&gt;/api/v1/barbershop/{id}/schedules&lt;br&gt;&lt;/div&gt;&lt;div&gt;with body {date_scheduled, barber_id, client_id, service_id } and get barber schedules available &amp;nbsp;&lt;br&gt;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="372" y="425" width="228" height="70" as="geometry" />
+          <mxGeometry x="372" y="425" width="288" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
