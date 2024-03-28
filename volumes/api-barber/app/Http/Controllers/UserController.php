@@ -176,6 +176,7 @@ class UserController extends Controller
 
     private function isTimeSlotAvailable($time, $duration, $barber, $date)
     {
+        $newTime = $time->copy();
         // Obter todos os agendamentos para o dia especificado
         $schedules = $barber->schedules()->whereDate('start_date', $date)->get();
 
@@ -184,13 +185,20 @@ class UserController extends Controller
             $startTime = Carbon::parse($schedule->start_date);
             $endTime = Carbon::parse($schedule->end_date);
 
+            if($newTime->equalTo($startTime)) {
+                return false;
+            }
+
+            if($newTime->equalTo($endTime)) {
+                return true;
+            }
             // Verificar se há sobreposição de horários
-            if ($time->between($startTime, $endTime) || $time->equalTo($startTime) || $time->equalTo($endTime)) {
+            if ($newTime->between($startTime, $endTime)) {
                 return false;
             }
 
             // Verificar se há tempo de duração suficiente entre os horários
-            if ($time->addMinutes($duration)->between($startTime, $endTime)) {
+            if ($newTime->addMinutes($duration)->between($startTime, $endTime) && !!!$newTime->equalTo($startTime)) {
                 return false;
             }
         }
@@ -200,23 +208,47 @@ class UserController extends Controller
 
     public function scheduleService(Request $request, Barbershop $barbershop, User $barber)
     {
+        $validateUser = Validator::make(
+            $request->all(),
+            [
+                'date_scheduled' => 'required|date',
+                'client_id' => 'required|integer',
+                'service_id' => ['required|integer', function ($attribute, $value, $fail) {
+                    $existingServiceIds = Service::pluck('id')->toArray();
+                    if (!in_array($value, $existingServiceIds)) {
+                        $fail("The selected service with ID $value does not exist.");
+                    }
+                }],
+            ]
+        );
+
+        $time = Carbon::parse($request->date_scheduled);
+        $date = date_create($request->date_scheduled)->format('Y-m-d');
         $service = Service::find($request->service_id);
-        $startTime = Carbon::parse($request->start_date);
+        
+        if (!$this->isTimeSlotAvailable($time, $service->duration, $barber, $date)) {
+            return response()->json([
+               'status' => false,
+               'message' => 'Time slot is not available',
+            ], 401);
+        }
+
+        $startTime = Carbon::parse($request->date_scheduled);
+        $endTime = $startTime->copy()->addMinutes($service->duration);
+
         $schedule = Schedule::create([
             'amount' => $service->price,
             'start_date' => $startTime,
-            'end_date' => $startTime->addMinutes($service->duration),
+            'end_date' => $endTime,
             'barbershop_id' => $barbershop->id,
             'barber_id' => $barber->id,
             'client_id' => $request->client_id,
+            'service_id' => $service->id,
         ]);
 
-        $service->schedule_id =  $schedule->id;
-        $service->save();
-
         return response()->json([
-           'status' => true,
-           'message' => 'Schedule Created Successfully',
+            'status' => true,
+            'message' => 'Schedule Created Successfully',
             'data' => $schedule
         ], 200);
     }

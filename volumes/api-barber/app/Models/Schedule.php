@@ -22,13 +22,14 @@ class Schedule extends Model
         'barbershop_id',
         'barber_id',
         'client_id',
+        'service_id'
     ];
 
     protected $casts = [
         'amount' => 'float',
         'status' => 'string',
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
     ];
 
     public function barbershop(): BelongsTo
@@ -46,8 +47,8 @@ class Schedule extends Model
         return $this->belongsTo(User::class, 'client_id', 'id');
     }
 
-    public function service(): HasOne
+    public function service(): BelongsTo
     {
-        return $this->hasOne(Service::class);
+        return $this->belongsTo(Service::class, 'service_id', 'id');
     }
 }

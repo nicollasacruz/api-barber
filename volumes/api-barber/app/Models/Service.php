@@ -39,8 +39,8 @@ class Service extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function schedules(): belongsTo
+    public function schedules(): HasMany
     {
-        return $this->belongsTo(Schedule::class);
+        return $this->hasMany(Schedule::class, 'service_id', 'id');
     }
 }
