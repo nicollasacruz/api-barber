@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barbershop;
 use App\Models\Schedule;
 use App\Models\Service;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -22,49 +23,45 @@ class ScheduleController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request, Barbershop $barbershop)
     {
         $this->authorize('store', Schedule::class);
-
+    
         $request->validate([
-            'amount' => 'required|numeric|between:0,999999.99',
-            'start_date' => 'required|date',
-            'end_date' => 'required|after:start_date',
-            'barbershop_id' => 'required|numeric',
-            'barber_id' => 'required|numeric',
-            'client_id' => 'required|numeric',
-            'services' => ['required', 'array', function ($attribute, $value, $fail) {
+            'date_scheduled' => 'required|date',
+            'barber_id' => 'required|integer',
+            'client_id' => 'required|integer',
+            'service_id' => ['required', 'integer', function ($attribute, $value, $fail) {
                 $existingServiceIds = Service::pluck('id')->toArray();
-                foreach ($value as $serviceId) {
-                    if (!in_array($serviceId, $existingServiceIds)) {
-                        $fail("The selected service with ID $serviceId does not exist.");
-                    }
+                if (!in_array($value, $existingServiceIds)) {
+                    $fail("The selected service with ID $value does not exist.");
                 }
             }],
         ]);
-
-        $services = $request->services;
+    
+        $service = Service::find($request->service_id);
+    
+        $startDate = Carbon::parse($request->date_scheduled);
+        $endDate = $startDate->copy()->addMinutes($service->duration);
+    
         $schedule = Schedule::create([
-            'amount' => $request->amount,
+            'amount' => $service->price,
             'status' => 'scheduled',
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
             'barbershop_id' => $barbershop->id,
             'barber_id' => $request->barber_id,
             'client_id' => $request->client_id,
+            'service_id' => $service->id,
         ]);
-
-        $schedule->services()->attach($services);
-
+    
         return response()->json([
             'status' => true,
             'message' => 'Schedule created successfully',
             'data' => $schedule,
         ]);
     }
+    
 
     /**
      * Display the specified resource.
@@ -155,4 +152,6 @@ class ScheduleController extends Controller
             'message' => 'Schedule deleted successfully',
         ]);
     }
+
+    
 }

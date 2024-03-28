@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -42,7 +43,11 @@ class AuthController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'User Created Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'token' => $user->createToken(
+                    $user->name,
+                    [''],
+                    Carbon::now()->addHours(6)
+                )->plainTextToken
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -52,9 +57,6 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * Login the specified resource.
-     */
     public function login(Request $request)
     {
         try {
@@ -69,7 +71,7 @@ class AuthController extends Controller
             if ($validateUser->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'validation error',
+                    'message' => 'Validation error',
                     'errors' => $validateUser->errors()
                 ], 401);
             }
@@ -77,16 +79,32 @@ class AuthController extends Controller
             if (!Auth::attempt($request->only(['email', 'password']))) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Email & Password does not match with our record.',
+                    'message' => 'Email & Password do not match with our records.',
                 ], 401);
             }
 
-            $user = User::where('email', $request->email)->first();
+            $user = $request->user();
+
+            $existingToken = $user->currentAccessToken();
+
+            if ($existingToken) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'User Logged In Successfully',
+                    'token' => $existingToken->plainTextToken
+                ], 200);
+            }
+
+            $token = $user->createToken(
+                $user->name,
+                [''],
+                Carbon::now()->addHours(6)
+            )->plainTextToken;
 
             return response()->json([
                 'status' => true,
                 'message' => 'User Logged In Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'token' => $token
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -95,6 +113,7 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
 
 
     /**
@@ -106,13 +125,13 @@ class AuthController extends Controller
             auth()->user()->tokens()->delete();
 
             return response()->json([
-              "message"=>"logged out"
+                "message" => "logged out"
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
             ], 500);
-        } 
+        }
     }
 }

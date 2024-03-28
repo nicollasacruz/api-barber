@@ -15,7 +15,7 @@ class BarbershopFactory extends Factory
 
     /**
      * @param string $name
-     * @param string $mail
+     * @param string $email
      * @param string $address
      * @param int $manager_id
      * @param int $receptionist_id
@@ -25,7 +25,7 @@ class BarbershopFactory extends Factory
     {
         return [
             'name' => $this->faker->company,
-            'mail' => $this->faker->unique()->safeEmail,
+            'email' => $this->faker->unique()->safeEmail,
             'address' => $this->faker->address,
             'manager_id' => User::factory()->create()->id,
             'receptionist_id' => User::factory()->create()->id,

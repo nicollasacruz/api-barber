@@ -1,7 +1,5 @@
 version: '3.8'
-
 services:
-
   web_server_barber:
     build:
       context: ./nginx
@@ -11,13 +9,13 @@ services:
       - ./volumes/api-barber:/var/www/html
     container_name: web_server_barber
     ports:
-      - "8080:8080"
+      - "7777:7777"
     depends_on:
-      - php
+      - php_api_barber
     networks:
       - minha_rede
 
-  php:
+  php_api_barber:
     container_name: php
     build:
       context: ./php

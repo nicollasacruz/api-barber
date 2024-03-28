@@ -13,7 +13,7 @@ class BarbershopPolicy
      */
     public function showAny(User $user): bool
     {
-        return $user->hasRole('admin');
+        return true;
     }
 
     /**

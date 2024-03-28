@@ -9,17 +9,24 @@ use Tests\TestCase;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
+beforeAll(function () {
     $this->admin = User::factory()->create(['role' => ['user', 'admin']]);
     $this->manager = User::factory()->create(['role' => ['user', 'manager']]);
     $this->receptionist = User::factory()->create(['role' => ['user', 'receptionist']]);
     $this->user = User::factory()->create();
 });
 
+// beforeEach(function () {
+//     $this->admin = User::factory()->create(['role' => ['user', 'admin']]);
+//     $this->manager = User::factory()->create(['role' => ['user', 'manager']]);
+//     $this->receptionist = User::factory()->create(['role' => ['user', 'receptionist']]);
+//     $this->user = User::factory()->create();
+// });
+
 it('allows admin to store a barbershop', function () {
     $barbershopData = [
         "name" => "Kilback, Huel and Reilly",
-        "mail" => "josie.christiansen@example.net",
+        "email" => "josie.christiansen@example.net",
         "address" => "81523 Veronica Port Suite 552 Gulgowskimouth, OK 51954",
         "manager_id" => $this->manager->id,
         "receptionist_id" => $this->receptionist->id,
@@ -40,7 +47,7 @@ it('allows manager to update a barbershop they manage', function () {
         'address' => $barbershop->address,
         'manager_id' => $barbershop->manager->id,
         'receptionist_id' => $barbershop->receptionist->id,
-        'mail' => $barbershop->mail,
+        'email' => $barbershop->email,
     ];
     $response = $this->actingAs($this->manager)
         ->patchJson("/api/v1/barbershops/{$barbershop->id}", $updatedData);
@@ -60,7 +67,7 @@ it('blocks manager from updating a barbershop they do not manage', function () {
             'address' => $barbershop->address,
             'manager_id' => $barbershop->manager->id,
             'receptionist_id' => $barbershop->receptionist->id,
-            'mail' => $barbershop->mail,
+            'email' => $barbershop->email,
         ];
     dump([$manager->name, $manager->id]);
     $response = $this->actingAs($manager)
@@ -71,7 +78,7 @@ it('blocks manager from updating a barbershop they do not manage', function () {
 it('allows admin to delete a barbershop', function () {
     $barbershopData = [
         "name" => "Kilback, Huel and Reilly",
-        "mail" => "josie.christiansen@example.net",
+        "email" => "josie.christiansen@example.net",
         "address" => "81523 Veronica Port Suite 552 Gulgowskimouth, OK 51954",
         "manager_id" => $this->manager->id,
         "receptionist_id" => $this->receptionist->id,

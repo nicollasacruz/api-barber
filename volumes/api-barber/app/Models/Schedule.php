@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Schedule extends Model
@@ -45,8 +46,8 @@ class Schedule extends Model
         return $this->belongsTo(User::class, 'client_id', 'id');
     }
 
-    public function services(): BelongsToMany
+    public function service(): HasOne
     {
-        return $this->belongsToMany(Service::class);
+        return $this->hasOne(Service::class);
     }
 }

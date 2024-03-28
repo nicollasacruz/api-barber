@@ -1,0 +1,223 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Barbershop;
+use App\Models\Schedule;
+use App\Models\Service;
+use App\Models\User;
+use App\Services\BarbershopService;
+use Carbon\Carbon;
+use DateInterval;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+
+class UserController extends Controller
+{
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function storeBarber(Request $request, Barbershop $barbershop)
+    {
+        $validateUser = Validator::make(
+            $request->all(),
+            [
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required',
+                'services' => ['array', function ($attribute, $value, $fail) {
+                    $existingServiceIds = Service::pluck('id')->toArray();
+                    foreach ($value as $serviceId) {
+                        if (!in_array($serviceId, $existingServiceIds)) {
+                            $fail("The selected service with ID $serviceId does not exist.");
+                        }
+                    }
+                }],
+            ]
+        );
+
+        if ($validateUser->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'validation error',
+                'errors' => $validateUser->errors()
+            ], 401);
+        }
+
+        $barber = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'barbershop_id' => $barbershop->id
+        ]);
+
+        $barber->role = ["barber", "user"];
+        $barber->save();
+
+        if ($request->services) {
+            $services = Service::whereIn('id', $request->services)->get();
+            $barber->services()->attach($services);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Barber Created Successfully',
+            'data' => $barber
+        ], 200);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function showBarber(Request $request, Barbershop $barbershop, User $barber)
+    {
+        return response()->json([
+            'status' => true,
+            'message' => 'Getting resource successfully',
+            'data' => $barber->with('services')->get(),
+        ]);
+    }
+
+    public function updateBarber(Request $request, Barbershop $barbershop, User $barber)
+    {
+        $validateUser = Validator::make(
+            $request->all(),
+            [
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email,' . $barber->id,
+                'services' => ['array', function ($attribute, $value, $fail) {
+                    $existingServiceIds = Service::pluck('id')->toArray();
+                    foreach ($value as $serviceId) {
+                        if (!in_array($serviceId, $existingServiceIds)) {
+                            $fail("The selected service with ID $serviceId does not exist.");
+                        }
+                    }
+                }],
+            ]
+        );
+
+        if ($validateUser->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validateUser->errors()
+            ], 401);
+        }
+
+        $barber->fill([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'barbershop_id' => $barbershop->id,
+        ]);
+
+        if ($request->has('services')) {
+            $barber->services()->sync($request->input('services'));
+        }
+
+        if ($barber->isDirty()) {
+            $barber->save();
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Barber Updated Successfully',
+            'data' => $barber
+        ], 200);
+    }
+
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Barbershop $barbershop, User $user)
+    {
+        $user->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Barber Deleted Successfully',
+            'data' => $user
+        ], 200);
+    }
+
+    public function getAvailableSchedules(BarbershopService $barbershopService, Request $request, Barbershop $barbershop, User $barber)
+    {
+        $duration = $request->duration;
+        $interval = 15;
+        $availableSchedules = [];
+
+        $date = date_create($request->date)->format('Y-m-d');
+
+        // Obter os horários de funcionamento para o dia especificado
+        $openingHours = $barbershopService->getBusinessHours($barbershop, $date);
+
+        // Iterar sobre os horários de funcionamento e encontrar os horários disponíveis
+        foreach ($openingHours as $intervalDay) {
+            [$openingTime, $closingTime] = explode('-', $intervalDay);
+
+            $startOfDay = Carbon::parse($openingTime);
+            $endOfDay = Carbon::parse($closingTime);
+
+            // Dividir o intervalo em segmentos de 15 minutos
+            $time = $startOfDay->copy();
+            while ($time->lte($endOfDay)) {
+                // Verificar se o segmento de tempo está disponível
+                if ($this->isTimeSlotAvailable($time, $duration, $barber, $date)) {
+                    $availableSchedules[] = $time->format('H:i');
+                }
+                // Avançar para o próximo segmento de tempo
+                $time = $time->addMinutes($interval);
+            }
+        }
+
+        return $availableSchedules;
+    }
+
+    private function isTimeSlotAvailable($time, $duration, $barber, $date)
+    {
+        // Obter todos os agendamentos para o dia especificado
+        $schedules = $barber->schedules()->whereDate('start_date', $date)->get();
+
+        // Verificar se o segmento de tempo está dentro de um horário já agendado
+        foreach ($schedules as $schedule) {
+            $startTime = Carbon::parse($schedule->start_date);
+            $endTime = Carbon::parse($schedule->end_date);
+
+            // Verificar se há sobreposição de horários
+            if ($time->between($startTime, $endTime) || $time->equalTo($startTime) || $time->equalTo($endTime)) {
+                return false;
+            }
+
+            // Verificar se há tempo de duração suficiente entre os horários
+            if ($time->addMinutes($duration)->between($startTime, $endTime)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function scheduleService(Request $request, Barbershop $barbershop, User $barber)
+    {
+        $service = Service::find($request->service_id);
+        $startTime = Carbon::parse($request->start_date);
+        $schedule = Schedule::create([
+            'amount' => $service->price,
+            'start_date' => $startTime,
+            'end_date' => $startTime->addMinutes($service->duration),
+            'barbershop_id' => $barbershop->id,
+            'barber_id' => $barber->id,
+            'client_id' => $request->client_id,
+        ]);
+
+        $service->schedule_id =  $schedule->id;
+        $service->save();
+
+        return response()->json([
+           'status' => true,
+           'message' => 'Schedule Created Successfully',
+            'data' => $schedule
+        ], 200);
+    }
+}

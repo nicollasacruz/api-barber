@@ -32,6 +32,19 @@ class BarbershopController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     */
+    public function getBarbers(Barbershop $barbershop)
+    {
+        return response()->json([
+            'status' => true,
+            'message' => 'Getting resource successfully',
+            'data' => $barbershop->barbers,
+        ]);
+    }
+
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request): JsonResponse
@@ -42,7 +55,7 @@ class BarbershopController extends Controller
             'name' => 'required|string|min:3|max:255|unique:barbershops',
             'icon' => 'image|max:1000000',
             'cover_image' => 'image|max:1000000',
-            'mail' => 'required|email|max:100',
+            'email' => 'required|email|max:100',
             'address' => 'required|max:200',
         ]);
 
@@ -79,7 +92,7 @@ class BarbershopController extends Controller
             'name' => 'string|min:4|max:255|unique:barbershops,name,' . $barbershop->id,
             'icon' => 'image|max:1000000',
             'cover_image' => 'image|max:1000000',
-            'mail' => 'string|max:100',
+            'email' => 'string|max:100',
             'address' => 'string|max:250',
         ]);
 

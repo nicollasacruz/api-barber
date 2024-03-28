@@ -57,13 +57,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Schedule::class, 'client_id', 'id');
     }
 
-    public function barberSchedules(): HasMany
+    public function schedules(): HasMany
     {
         return $this->hasMany(Schedule::class, 'barber_id', 'id');
     }
 
-    public function barberServices(): BelongsToMany
+    public function services(): BelongsToMany
     {
-        return $this->belongsToMany(Service::class);
+        return $this->belongsToMany(Service::class, 'barber_service', 'barber_id', 'service_id');
     }
 }

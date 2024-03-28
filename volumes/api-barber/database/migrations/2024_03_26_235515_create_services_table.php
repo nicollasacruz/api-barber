@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('icon')->nullable();
             $table->float('price')->default(0);
+            $table->integer('duration')->default(30);
             $table->unsignedBigInteger('barbershop_id');
 
             $table->foreign('barbershop_id')->references('id')->on('barbershops');

@@ -23,8 +23,9 @@ class Barbershop extends Model implements HasMedia
         'name',
         'icon',
         'cover_image',
-        'mail',
+        'email',
         'address',
+        'businessHours',
         'receptionist_id',
         'manager_id',
     ];
@@ -38,10 +39,11 @@ class Barbershop extends Model implements HasMedia
         'name' => 'string',
         // 'icon' => 'string',
         // 'cover_image' => 'string',
-        'mail' => 'string',
+        'email' => 'string',
         'address' => 'string',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'businessHours' => 'array', 
     ];
 
     public function barbers(): HasMany
@@ -64,3 +66,4 @@ class Barbershop extends Model implements HasMedia
         return $this->hasMany(Schedule::class, 'barbershop_id', 'id');
     }
 }
+    

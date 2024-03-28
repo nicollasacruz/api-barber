@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barbershop;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
@@ -18,14 +19,13 @@ class ServiceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Barbershop $barbershop)
     {
         $request->validate([
             'name' => 'required|string|min:3|max:255',
             'description' => 'string|min:3|max:255',
             'icon' => 'image|max:1000000',
             'price' => 'required|numeric|between:0,999999.99',
-            'barbershop_id' => 'required|integer|min:1',
         ]);
 
         $icon = $request->file('icon');
@@ -36,9 +36,9 @@ class ServiceController extends Controller
 
         }
         $service = Service::create([
-            'barbershop_id' => $request->barbershop_id,
+            'barbershop_id' => $barbershop->id,
             'name' => $request->name,
-            'description' => $request->mail,
+            'description' => $request->email,
             'price' => $request->address,
             'icon' => $icon ? 'app/public/images/services/' . $icon_name : '',
         ]);

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('icon')->nullable();
             $table->string('cover_image')->nullable();
-            $table->string('mail');
+            $table->string('email');
             $table->string('address');
             $table->timestamps();
             $table->unsignedBigInteger('manager_id')->nullable();
