@@ -8,7 +8,7 @@ use App\Models\Service;
 use App\Models\User;
 use App\Services\BarbershopService;
 use Carbon\Carbon;
-use DateInterval;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -141,7 +141,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function getAvailableSchedules(BarbershopService $barbershopService, Request $request, Barbershop $barbershop, User $barber)
+    public function getAvailableSchedules(BarbershopService $barbershopService, Request $request, Barbershop $barbershop, User $barber): JsonResponse
     {
         $duration = $request->duration;
         $interval = 15;
@@ -171,7 +171,11 @@ class UserController extends Controller
             }
         }
 
-        return $availableSchedules;
+        return response()->json([
+            'status' => true,
+            'message' => 'Available Schedules',
+            'data' => $availableSchedules
+        ]);
     }
 
     private function isTimeSlotAvailable($time, $duration, $barber, $date)
@@ -185,11 +189,11 @@ class UserController extends Controller
             $startTime = Carbon::parse($schedule->start_date);
             $endTime = Carbon::parse($schedule->end_date);
 
-            if($newTime->equalTo($startTime)) {
+            if ($newTime->equalTo($startTime)) {
                 return false;
             }
 
-            if($newTime->equalTo($endTime)) {
+            if ($newTime->equalTo($endTime)) {
                 return true;
             }
             // Verificar se há sobreposição de horários
@@ -225,11 +229,11 @@ class UserController extends Controller
         $time = Carbon::parse($request->date_scheduled);
         $date = date_create($request->date_scheduled)->format('Y-m-d');
         $service = Service::find($request->service_id);
-        
+
         if (!$this->isTimeSlotAvailable($time, $service->duration, $barber, $date)) {
             return response()->json([
-               'status' => false,
-               'message' => 'Time slot is not available',
+                'status' => false,
+                'message' => 'Time slot is not available',
             ], 401);
         }
 
@@ -250,6 +254,38 @@ class UserController extends Controller
             'status' => true,
             'message' => 'Schedule Created Successfully',
             'data' => $schedule
+        ], 200);
+    }
+
+    public function updateProfile(Request $request, User $user)
+    {
+        $request->validate([
+            'name' => 'string|min:4',
+            'email' => 'email|unique:users,email',
+            'contact' => 'string|min:11',
+            'password' => 'confirmed|min:6',
+            'profile_image' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+        ]);
+
+        $user->fill($request->only([
+            'name',
+            'email',
+            'password'
+        ]));
+
+        if ($request->hasFile('profile_image')) {
+            $user->clearMedia('profile');
+            $user->addMediaFromRequest('profile_image')->toMediaCollection('profile');
+        }
+
+        if ($user->isDirty()) {
+            $user->save();
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'User Updated Successfully',
+            'data' => $user
         ], 200);
     }
 }

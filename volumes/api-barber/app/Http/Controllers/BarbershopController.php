@@ -53,8 +53,8 @@ class BarbershopController extends Controller
 
         $request->validate([
             'name' => 'required|string|min:3|max:255|unique:barbershops',
-            'icon' => 'image|max:1000000',
-            'cover_image' => 'image|max:1000000',
+            'icon' => 'image|mimes:jpeg,png,jpg,gif|max:1000000',
+            'cover_image' => 'image|mimes:jpeg,png,jpg,gif|max:1000000',
             'email' => 'required|email|max:100',
             'address' => 'required|max:200',
         ]);

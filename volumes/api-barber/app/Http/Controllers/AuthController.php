@@ -20,9 +20,10 @@ class AuthController extends Controller
             $validateUser = Validator::make(
                 $request->all(),
                 [
-                    'name' => 'required',
+                    'name' => 'required|string',
+                    'contact' => 'required|string',
                     'email' => 'required|email|unique:users,email',
-                    'password' => 'required'
+                    'password' => 'required|confirmed|min:6',
                 ]
             );
 
@@ -37,6 +38,7 @@ class AuthController extends Controller
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
+                'contact' => $request->contact,
                 'password' => Hash::make($request->password)
             ]);
 
