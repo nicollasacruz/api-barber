@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-03-28T10:49:30.581Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15" etag="QGMYYo1OwHES_HKx6iHJ" version="24.2.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-28T12:40:20.054Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15" etag="0QubzLLiw9UtRnKGgs1B" version="24.2.0" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="340" dy="207" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -87,7 +87,7 @@
           <mxGeometry x="160" y="440" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="MjFSmDIg5Qm6kAtnbqlG-27" value="Make a POST for&lt;div&gt;/api/v1/barbershop/{id}/schedules&lt;br&gt;&lt;/div&gt;&lt;div&gt;with body {date_scheduled, barber_id, client_id, service_id } and get barber schedules available &amp;nbsp;&lt;br&gt;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;rounded=0;glass=0;strokeWidth=1;shadow=0;fontSize=9;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="372" y="430" width="228" height="80" as="geometry" />
+          <mxGeometry x="372" y="420" width="228" height="80" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
