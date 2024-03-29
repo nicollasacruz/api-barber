@@ -247,7 +247,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Time slot is not available',
-            ], 401);
+            ], 404);
         }
 
         $startTime = Carbon::parse($request->date_scheduled);

@@ -24,6 +24,7 @@ class AuthController extends Controller
                     'contact' => 'required|string',
                     'email' => 'required|email|unique:users,email',
                     'password' => 'required|confirmed|min:6',
+                    'password_confirmation' => 'required',
                 ]
             );
 

@@ -77,7 +77,7 @@ class BarbershopController extends Controller
 
         return response()->json([
             'status' => true,
-            'data' => $barbershop,
+            'data' => $barbershop->load('media'),
         ]);
     }
 

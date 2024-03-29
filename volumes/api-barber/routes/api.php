@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarbershopController;
+use App\Http\Controllers\FeedImageController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
@@ -72,6 +73,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{schedule}', [ScheduleController::class, 'destroy'])->can('destroy', ['schedule']);
         Route::delete('/forceDelete/{schedule}', [ScheduleController::class, 'forceDestroy']);
         Route::post('/restore/{schedule}', [ScheduleController::class, 'restore']);
+    });
+
+    Route::prefix('feed')->group(function () {
+        Route::get('/all', [FeedImageController::class, 'getAllFeedImagesByBarbershop']);
+        Route::get('/{barber}', [ScheduleController::class, 'show'])->where('barbershop', '[0-9]+');
+        Route::post('/{barber}', [FeedImageController::class, 'store'])->where('barber', '[0-9]+');
+        Route::patch('/{barber}', [FeedImageController::class, 'update'])->where('barber', '[0-9]+');
+        Route::delete('/{barber}', [FeedImageController::class, 'destroy'])->can('destroy', ['barber']);
+        Route::delete('/forceDelete/{barber}', [FeedImageController::class, 'forceDestroy']);
+        Route::post('/restore/{barber}', [FeedImageController::class, 'restore']);
     });
 
     

@@ -68,4 +68,14 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     {
         return $this->belongsToMany(Service::class, 'barber_service', 'barber_id', 'service_id');
     }
+
+    public function likedImages(): BelongsToMany
+    {
+        return $this->belongsToMany(FeedImage::class, 'likes_users', 'user_id', 'feed_image_id')->withTimestamps();
+    }
+
+    public function feedImages(): HasMany
+    {
+        return $this->hasMany(FeedImage::class, 'user_id', 'id');
+    }
 }
