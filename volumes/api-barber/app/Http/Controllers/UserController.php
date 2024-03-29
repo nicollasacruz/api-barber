@@ -216,15 +216,28 @@ class UserController extends Controller
             $request->all(),
             [
                 'date_scheduled' => 'required|date',
-                'client_id' => 'required|integer',
+                'client_id' => ['required|integer', function ($attribute, $value, $fail) {
+                    $existingClientIds = User::pluck('id')->toArray();
+                    if (!in_array($value, $existingClientIds)) {
+                        $fail("The $attribute $value selected does not exist.");
+                    }
+                }],
                 'service_id' => ['required|integer', function ($attribute, $value, $fail) {
                     $existingServiceIds = Service::pluck('id')->toArray();
                     if (!in_array($value, $existingServiceIds)) {
-                        $fail("The selected service with ID $value does not exist.");
+                        $fail("The $attribute $value selected does not exist.");
                     }
                 }],
             ]
         );
+
+        if ($validateUser->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validateUser->errors()
+            ], 401);
+        }
 
         $time = Carbon::parse($request->date_scheduled);
         $date = date_create($request->date_scheduled)->format('Y-m-d');

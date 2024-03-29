@@ -77,25 +77,16 @@ class AuthController extends Controller
                     'errors' => $validateUser->errors()
                 ], 401);
             }
-
+            
             if (!Auth::attempt($request->only(['email', 'password']))) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Email & Password do not match with our records.',
+                    'message' => 'Email & Password do not match.',
                 ], 401);
             }
-
+            
             $user = $request->user();
-
-            $existingToken = $user->currentAccessToken();
-
-            if ($existingToken) {
-                return response()->json([
-                    'status' => true,
-                    'message' => 'User Logged In Successfully',
-                    'token' => $existingToken->plainTextToken
-                ], 200);
-            }
+            auth()->user()->tokens()->delete();
 
             $token = $user->createToken(
                 $user->name,
@@ -105,7 +96,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => true,
-                'message' => 'User Logged In Successfully',
+                'message' => 'User Logged in successfully',
                 'token' => $token
             ], 200);
         } catch (\Throwable $th) {
