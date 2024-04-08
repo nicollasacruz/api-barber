@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\FeedImage;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class FeedImageController extends Controller
 {
@@ -42,25 +43,37 @@ class FeedImageController extends Controller
         $image = $request->file('image');
         if ($image) {
             $image_name = $image->getBasename() . '_image.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/images/feedImages', $image_name);
+            $image->storeAs('public/images/feedImages/barber_' . $barber->id, $image_name);
         }
-        
+
         $feedImage = FeedImage::create([
             'subtitle' => $request->subtitle,
-            'image' =>  'app/public/images/feedImages/' . $image_name,
+            'image' =>  'public/images/feedImages/barber_' . $barber->id . '/' . $image_name,
             'user_id' => $barber->id,
             'likes_count' => 0,
         ]);
 
         $feedImage->addMediaFromRequest('image')
-            ->toMediaCollection('images');
+            ->toMediaCollection('images_feed');
+
+        // Recupere a mídia recém-adicionada
+        $media = $feedImage->getFirstMedia('images_feed');
+
+        // Verifique se a mídia foi recuperada com sucesso
+        // if ($media) {
+        //     // Salve o URL de visualização e o URL da imagem
+        //     $feedImage->url_preview = $media->getUrl('preview');
+        //     $feedImage->url_image = $media->getUrl();
+        //     $feedImage->save();
+        // }
 
         return response()->json([
             'status' => true,
             'message' => 'Feed image created successfully',
-            'data' => $feedImage
+            'data' => $feedImage->load('media')
         ], 201);
     }
+
 
     /**
      * Display the specified resource.
@@ -75,18 +88,37 @@ class FeedImageController extends Controller
      */
     public function update(Request $request, FeedImage $feedImage)
     {
-        $data = $request->validate([
-            'subtitle' => 'string',
+        // $request->validate([
+        //     'subtitle' => 'string|required',
+        // ]);
+
+        $validateUser = Validator::make(
+            $request->all(),
+            [
+                'subtitle' => 'string|required',
+            ]
+        );
+
+        if ($validateUser->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validateUser->errors()
+            ], 401);
+        }
+
+        $feedImage->fill([
+            'subtitle' => $request->input('subtitle'),
         ]);
 
-        $feedImage->fill($data);
-
-        $feedImage->save();
+        if ($feedImage->isDirty()) {
+            $feedImage->save();
+        }
 
         return response()->json([
             'status' => true,
             'message' => 'Feed image updated successfully',
-            'data' => $feedImage
+            'data' => $feedImage->load('media')
         ], 200);
     }
 
@@ -95,6 +127,12 @@ class FeedImageController extends Controller
      */
     public function destroy(FeedImage $feedImage)
     {
-        //
+        $feedImage->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Feed image deleted successfully',
+            'data' => $feedImage
+        ], 200);
     }
 }

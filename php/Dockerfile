@@ -2,7 +2,7 @@ FROM php:8.2-fpm
 
 RUN useradd -ms /bin/bash appuser
 
-RUN apt-get update && apt-get install libzip-dev ca-certificates curl gnupg wget -y
+RUN apt-get update && apt-get install libzip-dev libpng-dev libjpeg-dev ca-certificates curl gnupg wget -y
 
 # RUN wget http://memcached.org/latest
 # RUN tar -zxvf memcached-1.6.21.tar.gz
@@ -11,7 +11,12 @@ RUN apt-get update && apt-get install libzip-dev ca-certificates curl gnupg wget
 
 RUN apt install libsodium-dev
 
-RUN docker-php-ext-install pdo_mysql zip sodium exif && docker-php-ext-enable pdo_mysql zip sodium exif
+RUN docker-php-ext-install pdo_mysql zip sodium exif gd && docker-php-ext-enable pdo_mysql zip sodium exif
+
+RUN docker-php-ext-configure gd --with-jpeg=/usr/include/ 
+# RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ 
+
+RUN docker-php-ext-install -j$(nproc) gd
 
 RUN pecl install -o -f xdebug-3 \
     && docker-php-ext-enable xdebug

@@ -46,7 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('/{barbershop}/barbers')->group(function () {
             Route::post('/', [UserController::class, 'storeBarber'])->where('barbershop', '[0-9]+');
             Route::get('/{barber}', [UserController::class, 'showBarber'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
-            Route::put('/{barber}', [UserController::class, 'updateBarber'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
+            Route::patch('/{barber}', [UserController::class, 'updateBarber'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
             Route::post('/{barber}/schedule', [UserController::class, 'scheduleService'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
             Route::post('/{barber}/available-schedules', [UserController::class, 'getAvailableSchedules'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
             Route::delete('/{barber}', [UserController::class, 'destroy'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
@@ -76,10 +76,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('feed')->group(function () {
-        Route::get('/all', [FeedImageController::class, 'getAllFeedImagesByBarbershop']);
-        Route::get('/{barber}', [ScheduleController::class, 'show'])->where('barbershop', '[0-9]+');
-        Route::post('/{barber}', [FeedImageController::class, 'store'])->where('barber', '[0-9]+');
-        Route::patch('/{barber}', [FeedImageController::class, 'update'])->where('barber', '[0-9]+');
+        Route::get('barbershop/{barbershop}/all', [FeedImageController::class, 'getAllFeedImagesByBarbershop'])->where('barbershop', '[0-9]+');
+        Route::get('/barber/{barber}', [FeedImageController::class, 'show'])->where('barber', '[0-9]+');
+        Route::post('/barber/{barber}', [FeedImageController::class, 'store'])->where('barber', '[0-9]+');
+        Route::patch('/{feedImage}', [FeedImageController::class, 'update'])->where('feedImage', '[0-9]+');
         Route::delete('/{barber}', [FeedImageController::class, 'destroy'])->can('destroy', ['barber']);
         Route::delete('/forceDelete/{barber}', [FeedImageController::class, 'forceDestroy']);
         Route::post('/restore/{barber}', [FeedImageController::class, 'restore']);
