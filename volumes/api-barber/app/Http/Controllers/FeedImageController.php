@@ -60,12 +60,12 @@ class FeedImageController extends Controller
         $media = $feedImage->getFirstMedia('images_feed');
 
         // Verifique se a mídia foi recuperada com sucesso
-        // if ($media) {
-        //     // Salve o URL de visualização e o URL da imagem
-        //     $feedImage->url_preview = $media->getUrl('preview');
-        //     $feedImage->url_image = $media->getUrl();
-        //     $feedImage->save();
-        // }
+        if ($media) {
+            // Salve o URL de visualização e o URL da imagem
+            $feedImage->url_preview = $media->getUrl('preview');
+            $feedImage->url_image = $media->getUrl();
+            $feedImage->save();
+        }
 
         return response()->json([
             'status' => true,
@@ -80,7 +80,13 @@ class FeedImageController extends Controller
      */
     public function show(FeedImage $feedImage)
     {
-        //
+        $feedImage->load('media', 'comments');
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Feed image retrieved successfully',
+            'data' => $feedImage
+        ], 200);
     }
 
     /**
@@ -118,7 +124,7 @@ class FeedImageController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Feed image updated successfully',
-            'data' => $feedImage->load('media')
+            'data' => $feedImage->load('media')->with('comments')
         ], 200);
     }
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarbershopController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedImageController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ServiceController;
@@ -77,12 +78,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('feed')->group(function () {
         Route::get('barbershop/{barbershop}/all', [FeedImageController::class, 'getAllFeedImagesByBarbershop'])->where('barbershop', '[0-9]+');
-        Route::get('/barber/{barber}', [FeedImageController::class, 'show'])->where('barber', '[0-9]+');
         Route::post('/barber/{barber}', [FeedImageController::class, 'store'])->where('barber', '[0-9]+');
+        Route::get('/{feedImage}', [FeedImageController::class, 'show'])->where('feedImage', '[0-9]+');
         Route::patch('/{feedImage}', [FeedImageController::class, 'update'])->where('feedImage', '[0-9]+');
         Route::delete('/{barber}', [FeedImageController::class, 'destroy'])->can('destroy', ['barber']);
         Route::delete('/forceDelete/{barber}', [FeedImageController::class, 'forceDestroy']);
         Route::post('/restore/{barber}', [FeedImageController::class, 'restore']);
+
+        Route::get('/{feedImage}/commenters', [CommentController::class, 'index'])->where('feedImage', '[0-9]+');
+        Route::post('/{feedImage}/commenters', [CommentController::class, 'store'])->where('feedImage', '[0-9]+');
     });
 
     

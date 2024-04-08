@@ -1,2 +1,3 @@
 volumes/mysql/*
 .DS_Store
+volumes/api-barber/composer.lock

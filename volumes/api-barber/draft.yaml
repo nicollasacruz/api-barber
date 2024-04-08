@@ -1,0 +1,8 @@
+models:
+  Comment:
+    user_id: id unsigned foreign on delete:cascade
+    feed_image_id: id unsigned foreign on delete:cascade
+    content: text
+    is_show: boolean default:true
+    relationships:
+      belongsTo: User, FeedImage
