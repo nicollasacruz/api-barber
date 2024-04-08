@@ -1,8 +1,80 @@
 models:
-  Comment:
-    user_id: id unsigned foreign on delete:cascade
-    feed_image_id: id unsigned foreign on delete:cascade
-    content: text
-    is_show: boolean default:true
+  Product:
+    name: string
+    description: text
+    price: decimal:10,2 default:0
+    cost: decimal:10,2
+    sale_percent: integer default:0
+    commission_percent: integer default:0
+    product_image: string nullable
+    timestamps: true
     relationships:
-      belongsTo: User, FeedImage
+      hasMany: ProductTransaction
+
+  ProductTransaction:
+    product_id: id unsigned foreign on delete:cascade
+    user_id: id unsigned foreign
+    quantity: integer
+    timestamps: true
+    relationships:
+      belongsTo: Product, User
+
+  FincanceTransaction:
+    type: enum:commission,product_commission,sale,commission_paid,withdrawal,cash_ajustment
+    user_id: id unsigned foreign
+    amount: decimal:10,2
+    timestamps: true
+    relationships:
+      hasOne: User
+      
+  CashBalance:
+    receptionist_id: id unsigned foreign
+    manager_id: id unsigned foreign
+    start_balance: decimal:10,2
+    balance: decimal:10,2
+    final_balance: decimal:10,2
+    cash: decimal:10,2
+    card: decimal:10,2
+    start_date: datetime
+    end_date: datetime
+    timestamps: true
+    relationships:
+      belongsTo: User:receptionist,User:manager
+      hasMany: FinanceTransaction
+  
+  Commission:
+    user_id: id unsigned foreign
+    items_price: decimal:10,2
+    percentage: integer
+    amount: decimal:10,2
+    timestamps: true
+    relationships:
+      belongsTo: User
+      hasMany: FinanceTransaction
+    
+  Plan:
+    name: string
+    description: text
+    price: decimal:10,2
+    user_id: id unsigned foreign
+    quantity: integer
+    quantity_used: integer default:0
+    percentage_discount: integer
+    timestamps: true
+    valid_at: datetime
+    relationships:
+      belongsTo: User
+      hasMany: Service
+
+  Service:
+    name: string
+    description: text
+    price: decimal:10,2
+    duration: integer
+    barbershop_id: id unsigned foreign
+    softDeletes: true
+    timestamps: true
+    relationships:
+      belongsTo: Barbershop
+      belongsToMany: Plan,User
+      hasMany: Schedule

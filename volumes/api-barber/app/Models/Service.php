@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Traits\Timestamp;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,8 +11,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Service extends Model
 {
-    use HasFactory, Timestamp, SoftDeletes;
+    use HasFactory, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'name',
         'description',
@@ -22,18 +26,27 @@ class Service extends Model
         'barbershop_id',
     ];
 
-    protected $cast = [
-        'name' => 'string',
-        'description' => 'text',
-        'price' => 'float',
-        'duration' => 'integer',
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'price' => 'decimal:2',
+        'barbershop_id' => 'integer',
     ];
 
     public function barbershop(): BelongsTo
     {
-        return $this->belongsTo(Barbershop::class, 'barbershop_id', 'id');
+        return $this->belongsTo(Barbershop::class);
     }
-    
+
+    public function plans(): BelongsToMany
+    {
+        return $this->belongsToMany(Plan::class);
+    }
+
     public function barbers(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
@@ -41,6 +54,6 @@ class Service extends Model
 
     public function schedules(): HasMany
     {
-        return $this->hasMany(Schedule::class, 'service_id', 'id');
+        return $this->hasMany(Schedule::class);
     }
 }

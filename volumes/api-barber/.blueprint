@@ -1,12 +1,38 @@
 created:
-    - database/factories/CommentFactory.php
-    - database/migrations/2024_04_08_155531_create_comments_table.php
-    - app/Models/Comment.php
+    - database/factories/ProductFactory.php
+    - database/factories/ProductTransactionFactory.php
+    - database/factories/FincanceTransactionFactory.php
+    - database/factories/CashBalanceFactory.php
+    - database/factories/CommissionFactory.php
+    - database/factories/PlanFactory.php
+    - database/factories/ServiceFactory.php
+    - database/migrations/2024_04_08_165128_create_products_table.php
+    - database/migrations/2024_04_08_165129_create_product_transactions_table.php
+    - database/migrations/2024_04_08_165130_create_fincance_transactions_table.php
+    - database/migrations/2024_04_08_165131_create_cash_balances_table.php
+    - database/migrations/2024_04_08_165132_create_commissions_table.php
+    - database/migrations/2024_04_08_165133_create_plans_table.php
+    - database/migrations/2024_04_08_165134_create_services_table.php
+    - database/migrations/2024_04_08_165135_create_plan_service_table.php
+    - database/migrations/2024_04_08_165136_create_service_user_table.php
+    - app/Models/Product.php
+    - app/Models/ProductTransaction.php
+    - app/Models/FincanceTransaction.php
+    - app/Models/CashBalance.php
+    - app/Models/Commission.php
+    - app/Models/Plan.php
+    - app/Models/Service.php
 models:
     Barbershop: { name: string, icon: 'string nullable default:NULL', cover_image: 'string nullable default:NULL', email: string, address: string, manager_id: 'biginteger unsigned nullable default:NULL', receptionist_id: 'biginteger unsigned nullable default:NULL', businessHours: 'longtext default:''[["08:00-20:00"],["08:00-20:00"],["08:00-20:00"],["08:00-20:00"],["08:00-20:00"],["08:00-20:00"],["08:00-20:00"]]''' }
+    Comment: { user_id: 'biginteger unsigned', feed_image_id: 'biginteger unsigned', content: text, is_show: 'boolean default:1' }
     FeedImage: { subtitle: 'string nullable default:NULL', image: string, isShow: 'boolean default:1', likes_count: 'biginteger unsigned', user_id: 'biginteger unsigned' }
     Media: { model_type: string, model_id: 'biginteger unsigned', uuid: 'char:36 nullable default:NULL', collection_name: string, name: string, file_name: string, mime_type: 'string nullable default:NULL', disk: string, conversions_disk: 'string nullable default:NULL', size: 'biginteger unsigned', manipulations: longtext, custom_properties: longtext, generated_conversions: longtext, responsive_images: longtext, order_column: 'integer unsigned nullable default:NULL' }
     Schedule: { amount: 'double default:0.00', status: "string default:'scheduled'", barbershop_id: 'biginteger unsigned', barber_id: 'biginteger unsigned', client_id: 'biginteger unsigned', start_date: datetime, end_date: datetime, service_id: 'biginteger unsigned' }
-    Service: { name: string, description: 'string nullable default:NULL', icon: 'string nullable default:NULL', price: 'double default:0.00', duration: 'integer default:30', barbershop_id: 'biginteger unsigned' }
     User: { name: string, email: string, email_verified_at: 'timestamp nullable default:NULL', password: string, role: 'longtext default:''["user"]''', remember_token: 'string:100 nullable default:NULL', barbershop_id: 'biginteger unsigned nullable default:NULL', contact: 'string nullable default:NULL' }
-    Comment: { user_id: 'id unsigned foreign on delete:cascade', feed_image_id: 'id unsigned foreign on delete:cascade', content: text, is_show: 'boolean default:true', relationships: { belongsTo: 'User, FeedImage' } }
+    Product: { name: string, description: text, price: 'decimal:10,2 default:0', cost: 'decimal:10,2', sale_percent: 'integer default:0', commission_percent: 'integer default:0', product_image: 'string nullable', timestamps: timestamps, relationships: { hasMany: ProductTransaction } }
+    ProductTransaction: { product_id: 'id unsigned foreign on delete:cascade', user_id: 'id unsigned foreign', quantity: integer, timestamps: timestamps, relationships: { belongsTo: 'Product, User' } }
+    FincanceTransaction: { type: 'enum:commission,product_commission,sale,commission_paid,withdrawal,cash_ajustment', user_id: 'id unsigned foreign', amount: 'decimal:10,2', timestamps: timestamps, relationships: { hasOne: User } }
+    CashBalance: { receptionist_id: 'id unsigned foreign', manager_id: 'id unsigned foreign', start_balance: 'decimal:10,2', balance: 'decimal:10,2', final_balance: 'decimal:10,2', cash: 'decimal:10,2', card: 'decimal:10,2', start_date: datetime, end_date: datetime, timestamps: timestamps, relationships: { belongsTo: 'User:receptionist,User:manager', hasMany: FinanceTransaction } }
+    Commission: { user_id: 'id unsigned foreign', items_price: 'decimal:10,2', percentage: integer, amount: 'decimal:10,2', timestamps: timestamps, relationships: { belongsTo: User, hasMany: FinanceTransaction } }
+    Plan: { name: string, description: text, price: 'decimal:10,2', user_id: 'id unsigned foreign', quantity: integer, quantity_used: 'integer default:0', percentage_discount: integer, timestamps: timestamps, valid_at: datetime, relationships: { belongsTo: User, hasMany: Service } }
+    Service: { name: string, description: text, price: 'decimal:10,2', duration: integer, barbershop_id: 'id unsigned foreign', softdeletes: softDeletes, timestamps: timestamps, relationships: { belongsTo: Barbershop, belongsToMany: 'Plan,User', hasMany: Schedule } }
