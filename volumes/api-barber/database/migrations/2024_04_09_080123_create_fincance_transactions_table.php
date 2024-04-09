@@ -15,9 +15,14 @@ return new class extends Migration
 
         Schema::create('fincance_transactions', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ["commission","product_commission","sale","commission_paid","withdrawal","cash_ajustment"]);
+            $table->enum('type', ["sale","commission_payment","withdrawal","cash_ajustment","purchase"]);
             $table->foreignId('user_id')->constrained()->unsigned();
+            $table->foreignId('cash_balance_id')->constrained()->unsigned();
             $table->decimal('amount', 10, 2);
+            $table->foreignId('sale_id');
+            $table->foreignId('withdrawal_id');
+            $table->foreignId('cash_ajustment_id');
+            $table->foreignId('commission_payment_id');
             $table->timestamps();
         });
 

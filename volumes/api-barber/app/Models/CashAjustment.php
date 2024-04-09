@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Commission extends Model
+class CashAjustment extends Model
 {
     use HasFactory;
 
@@ -18,11 +18,9 @@ class Commission extends Model
      */
     protected $fillable = [
         'user_id',
-        'items_price',
-        'percentage',
         'amount',
-        'finance_transaction_id',
-        'payed_at',
+        'reason',
+        'cash_balance_id',
     ];
 
     /**
@@ -33,10 +31,8 @@ class Commission extends Model
     protected $casts = [
         'id' => 'integer',
         'user_id' => 'integer',
-        'items_price' => 'decimal:2',
         'amount' => 'decimal:2',
-        'finance_transaction_id' => 'integer',
-        'payed_at' => 'datetime',
+        'cash_balance_id' => 'integer',
     ];
 
     public function user(): BelongsTo
@@ -44,13 +40,13 @@ class Commission extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function financeTransaction(): BelongsTo
+    public function cashBalance(): BelongsTo
     {
-        return $this->belongsTo(FinanceTransaction::class);
+        return $this->belongsTo(CashBalance::class);
     }
 
-    public function service(): HasOne
+    public function financeTransaction(): HasOne
     {
-        return $this->hasOne(Service::class);
+        return $this->hasOne(FinanceTransaction::class);
     }
 }

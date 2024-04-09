@@ -19,6 +19,7 @@ class ProductTransaction extends Model
         'product_id',
         'user_id',
         'quantity',
+        'purchase_id',
     ];
 
     /**
@@ -30,6 +31,7 @@ class ProductTransaction extends Model
         'id' => 'integer',
         'product_id' => 'integer',
         'user_id' => 'integer',
+        'purchase_id' => 'integer',
     ];
 
     public function product(): BelongsTo
@@ -40,5 +42,10 @@ class ProductTransaction extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function purchase(): BelongsTo
+    {
+        return $this->belongsTo(Purchase::class);
     }
 }

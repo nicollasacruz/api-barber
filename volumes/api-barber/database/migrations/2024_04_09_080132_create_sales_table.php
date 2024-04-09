@@ -13,9 +13,13 @@ return new class extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('barber_service', function (Blueprint $table) {
-            $table->foreignId('service_id');
-            $table->foreignId('barber_id');
+        Schema::create('sales', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->unsigned();
+            $table->foreignId('receptionist_id')->constrained()->unsigned();
+            $table->foreignId('finance_transaction_id')->constrained()->unsigned();
+            $table->decimal('price', 10, 2);
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('barber_service');
+        Schema::dropIfExists('sales');
     }
 };

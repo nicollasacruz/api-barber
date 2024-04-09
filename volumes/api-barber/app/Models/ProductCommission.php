@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Commission extends Model
+class ProductCommission extends Model
 {
     use HasFactory;
 
@@ -49,8 +49,8 @@ class Commission extends Model
         return $this->belongsTo(FinanceTransaction::class);
     }
 
-    public function service(): HasOne
+    public function products(): HasMany
     {
-        return $this->hasOne(Service::class);
+        return $this->hasMany(Product::class);
     }
 }

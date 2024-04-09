@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Commission extends Model
+class Purchase extends Model
 {
     use HasFactory;
 
@@ -17,12 +18,11 @@ class Commission extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id',
-        'items_price',
-        'percentage',
-        'amount',
+        'receptionist_id',
+        'manager_id',
         'finance_transaction_id',
-        'payed_at',
+        'price',
+        'status',
     ];
 
     /**
@@ -32,14 +32,19 @@ class Commission extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'user_id' => 'integer',
-        'items_price' => 'decimal:2',
-        'amount' => 'decimal:2',
+        'receptionist_id' => 'integer',
+        'manager_id' => 'integer',
         'finance_transaction_id' => 'integer',
-        'payed_at' => 'datetime',
+        'price' => 'decimal:2',
+        'status' => 'boolean',
     ];
 
-    public function user(): BelongsTo
+    public function manager(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function receptionist(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -49,8 +54,13 @@ class Commission extends Model
         return $this->belongsTo(FinanceTransaction::class);
     }
 
-    public function service(): HasOne
+    public function financeTransaction(): HasOne
     {
-        return $this->hasOne(Service::class);
+        return $this->hasOne(FinanceTransaction::class);
+    }
+
+    public function productTransactions(): HasMany
+    {
+        return $this->hasMany(ProductTransaction::class);
     }
 }

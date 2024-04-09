@@ -4,19 +4,18 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\Product;
-use App\Models\ProductTransaction;
-use App\Models\Purchase;
+use App\Models\CommissionPayment;
+use App\Models\FinanceTransaction;
 use App\Models\User;
 
-class ProductTransactionFactory extends Factory
+class CommissionPaymentFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = ProductTransaction::class;
+    protected $model = CommissionPayment::class;
 
     /**
      * Define the model's default state.
@@ -24,10 +23,11 @@ class ProductTransactionFactory extends Factory
     public function definition(): array
     {
         return [
-            'product_id' => Product::factory(),
             'user_id' => User::factory(),
-            'quantity' => $this->faker->numberBetween(-10000, 10000),
-            'purchase_id' => Purchase::factory(),
+            'amount' => $this->faker->randomFloat(2, 0, 99999999.99),
+            'finance_transaction_id' => FinanceTransaction::factory(),
+            'closed_at' => $this->faker->dateTime(),
+            'payed_at' => $this->faker->dateTime(),
         ];
     }
 }

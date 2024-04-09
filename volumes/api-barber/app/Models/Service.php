@@ -49,7 +49,7 @@ class Service extends Model
 
     public function barbers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'barber_service', 'service_id', 'barber_id');
     }
 
     public function schedules(): HasMany

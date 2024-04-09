@@ -17,15 +17,17 @@ models:
     quantity: integer
     timestamps: true
     relationships:
-      belongsTo: Product, User
+      belongsTo: Product,User,Purchase
 
   FincanceTransaction:
-    type: enum:commission,product_commission,sale,commission_paid,withdrawal,cash_ajustment
+    type: enum:sale,commission_payment,withdrawal,cash_ajustment,purchase
     user_id: id unsigned foreign
+    cash_balance_id: id unsigned foreign
     amount: decimal:10,2
     timestamps: true
     relationships:
       hasOne: User
+      belongsTo: CashBalance,Sale,Withdrawal,CashAjustment,CommissionPayment
       
   CashBalance:
     receptionist_id: id unsigned foreign
@@ -42,16 +44,61 @@ models:
       belongsTo: User:receptionist,User:manager
       hasMany: FinanceTransaction
   
+  CashAjustment:
+    user_id: id unsigned foreign
+    amount: decimal:10,2
+    reason: text
+    timestamps: true
+    relationships:
+      belongsTo: User,CashBalance
+      hasOne: FinanceTransaction
+
+  Withdrawal:
+    user_id: id unsigned foreign
+    amount: decimal:10,2
+    finance_transaction_id: id unsigned foreign
+    reason: text
+    timestamps: true
+    relationships:
+      belongsTo: User
+      hasOne: FinanceTransaction
+
   Commission:
     user_id: id unsigned foreign
     items_price: decimal:10,2
     percentage: integer
     amount: decimal:10,2
+    finance_transaction_id: id unsigned foreign
+    timestamps: true
+    payed_at: datetime
+    relationships:
+      belongsTo: User
+      hasOne: Service
+      
+  ProductCommission:
+    user_id: id unsigned foreign
+    items_price: decimal:10,2
+    percentage: integer
+    amount: decimal:10,2
+    finance_transaction_id: id unsigned foreign
+    timestamps: true
+    payed_at: datetime
+    relationships:
+      belongsTo: User
+      hasMany: Product
+
+  CommissionPayment:
+    user_id: id unsigned foreign
+    amount: decimal:10,2
+    finance_transaction_id: id unsigned foreign
+    closed_at: datetime
+    payed_at: datetime
     timestamps: true
     relationships:
       belongsTo: User
-      hasMany: FinanceTransaction
-    
+      hasOne: FinanceTransaction
+      hasMany: Commission,ProductCommission
+
   Plan:
     name: string
     description: text
@@ -78,3 +125,26 @@ models:
       belongsTo: Barbershop
       belongsToMany: Plan,User
       hasMany: Schedule
+  
+  Sale:
+    user_id: id unsigned foreign
+    receptionist_id: id unsigned foreign
+    finance_transaction_id: id unsigned foreign
+    price: decimal:10,2
+    timestamps: true
+    relationships:
+      belongsTo: User:user,User:receptionist
+      hasOne: FinanceTransaction
+      hasMany: Product, Service
+
+  Purchase:
+    receptionist_id: id unsigned foreign
+    manager_id: id unsigned foreign nullable
+    finance_transaction_id: id unsigned foreign nullable
+    price: decimal:10,2
+    status: boolean default:0
+    timestamps: true
+    relationships:
+      belongsTo: User:manager,User:receptionist
+      hasOne: FinanceTransaction
+      hasMany: ProductTransaction
