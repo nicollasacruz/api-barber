@@ -3,6 +3,10 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Barbershop;
+use App\Models\Service;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,11 +16,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        $barbershop = Barbershop::factory()->create();
+        $admin = User::factory()->create([
+            'role' => ['user', 'admin'],
+        ]);
+        $barber = User::factory()->create([
+            'role' => ['user', 'barber'],
+            'barbershop_id' =>  $barbershop->id,
+        ]);
+        $receptionist = User::factory()->create([
+            'role' => ['user', 'receptionist'],
+            'barbershop_id' =>  $barbershop->id,
+        ]);
+        $manager = User::factory()->create([
+            'role' => ['user', 'manager'],
+            'barbershop_id' =>  $barbershop->id,
+        ]);
+        Service::factory(3)->create([
+            'barbershop_id' =>  $barbershop->id,
+        ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $barber->services()->attach(Service::all());
+        User::factory(5)->create();
+
+
     }
 }

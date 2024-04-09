@@ -6,8 +6,6 @@ use App\Models\Barbershop;
 use App\Services\BarbershopService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class BarbershopController extends Controller
 {
@@ -36,10 +34,14 @@ class BarbershopController extends Controller
      */
     public function getBarbers(Barbershop $barbershop)
     {
+        $barbers = $barbershop->barbers->filter(function ($barber) {
+            return in_array('barber', $barber->role);
+        });
+    
         return response()->json([
             'status' => true,
             'message' => 'Getting resource successfully',
-            'data' => $barbershop->barbers,
+            'data' => $barbers->load('media'),
         ]);
     }
 

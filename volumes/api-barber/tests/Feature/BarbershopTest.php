@@ -9,19 +9,19 @@ use Tests\TestCase;
 
 uses(RefreshDatabase::class);
 
-beforeAll(function () {
-    $this->admin = User::factory()->create(['role' => ['user', 'admin']]);
-    $this->manager = User::factory()->create(['role' => ['user', 'manager']]);
-    $this->receptionist = User::factory()->create(['role' => ['user', 'receptionist']]);
-    $this->user = User::factory()->create();
-});
-
-// beforeEach(function () {
+// beforeAll(function () {
 //     $this->admin = User::factory()->create(['role' => ['user', 'admin']]);
 //     $this->manager = User::factory()->create(['role' => ['user', 'manager']]);
 //     $this->receptionist = User::factory()->create(['role' => ['user', 'receptionist']]);
 //     $this->user = User::factory()->create();
 // });
+
+beforeEach(function () {
+    $this->admin = User::factory()->create(['role' => ['user', 'admin']]);
+    $this->manager = User::factory()->create(['role' => ['user', 'manager']]);
+    $this->receptionist = User::factory()->create(['role' => ['user', 'receptionist']]);
+    $this->user = User::factory()->create();
+});
 
 it('allows admin to store a barbershop', function () {
     $barbershopData = [
@@ -45,7 +45,7 @@ it('allows manager to update a barbershop they manage', function () {
     $updatedData = [
         'name' => 'Updated Name',
         'address' => $barbershop->address,
-        'manager_id' => $barbershop->manager->id,
+        'manager_id' => $this->manager->id,
         'receptionist_id' => $barbershop->receptionist->id,
         'email' => $barbershop->email,
     ];
