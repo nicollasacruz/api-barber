@@ -7,19 +7,19 @@ use Illuminate\Support\Str;
 use App\Models\CashAjustment;
 use App\Models\CashBalance;
 use App\Models\CommissionPayment;
-use App\Models\FincanceTransaction;
+use App\Models\FinanceTransaction;
 use App\Models\Sale;
 use App\Models\User;
 use App\Models\Withdrawal;
 
-class FincanceTransactionFactory extends Factory
+class FinanceTransactionFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = FincanceTransaction::class;
+    protected $model = FinanceTransaction::class;
 
     /**
      * Define the model's default state.

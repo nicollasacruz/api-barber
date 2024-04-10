@@ -19,7 +19,7 @@ models:
     relationships:
       belongsTo: Product,User,Purchase
 
-  FincanceTransaction:
+  FinanceTransaction:
     type: enum:sale,commission_payment,withdrawal,cash_ajustment,purchase
     user_id: id unsigned foreign
     cash_balance_id: id unsigned foreign

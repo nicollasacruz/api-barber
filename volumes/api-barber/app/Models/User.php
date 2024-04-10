@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -61,6 +62,16 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         return $this->belongsTo(Barbershop::class, 'barbershop_id', 'id');
     }
 
+    public function barbershopReceptionist(): HasOne
+    {
+        return $this->hasOne(Barbershop::class, 'receptionist_id', 'id');
+    }
+
+    public function barbershopManaged(): BelongsTo
+    {
+        return $this->belongsTo(Barbershop::class, 'manager_id', 'id');
+    }
+
     public function clientSchedules(): HasMany
     {
         return $this->hasMany(Schedule::class, 'client_id', 'id');
@@ -89,5 +100,10 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function cashBalances(): HasMany
+    {
+        return $this->hasMany(CashBalance::class, 'receptionist_id', 'id');
     }
 }

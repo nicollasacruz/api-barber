@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class CashBalance extends Model
 {
@@ -24,8 +25,10 @@ class CashBalance extends Model
         'final_balance',
         'cash',
         'card',
+        'status',
         'start_date',
         'end_date',
+        'barbershop_id',
     ];
 
     /**
@@ -48,7 +51,7 @@ class CashBalance extends Model
 
     public function receptionist(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'receptionist_id', 'id');
     }
 
     public function manager(): BelongsTo

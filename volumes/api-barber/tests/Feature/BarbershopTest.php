@@ -56,7 +56,7 @@ it('allows manager to update a barbershop they manage', function () {
 });
 
 it('blocks manager from updating a barbershop they do not manage', function () {
-    $manager = User::factory()->create(['id' => 10, 'role' => ['user', 'manager']]);
+    $manager = User::factory()->create(['role' => ['user', 'manager']]);
     $barbershop = Barbershop::factory()->create(
         [
             'manager_id' => $this->manager->id, 'receptionist_id' => $this->receptionist->id

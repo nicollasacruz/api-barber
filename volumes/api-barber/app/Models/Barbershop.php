@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\MediaLibrary\HasMedia;
@@ -51,9 +52,9 @@ class Barbershop extends Model implements HasMedia
         return $this->hasMany(User::class, 'barbershop_id', 'id');
     }
 
-    public function receptionist(): HasOne
+    public function receptionist(): BelongsTo
     {
-        return $this->hasOne(User::class, 'id', 'receptionist_id');
+        return $this->belongsTo(User::class, 'receptionist_id', 'id');
     }
 
     public function manager(): HasOne

@@ -27,8 +27,8 @@ class BarbershopFactory extends Factory
             'name' => $this->faker->company,
             'email' => $this->faker->unique()->safeEmail,
             'address' => $this->faker->address,
-            'manager_id' => User::factory()->create()->id,
-            'receptionist_id' => User::factory()->create()->id,
+            // 'manager_id' => User::factory()->create()->id,
+            // 'receptionist_id' => User::factory()->create()->id,
         ];
     }
 }

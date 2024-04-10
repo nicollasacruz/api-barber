@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('fincance_transactions', function (Blueprint $table) {
+        Schema::create('finance_transactions', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ["sale","commission_payment","withdrawal","cash_ajustment","purchase"]);
             $table->foreignId('user_id')->constrained()->unsigned();
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('fincance_transactions');
+        Schema::dropIfExists('finance_transactions');
     }
 };
