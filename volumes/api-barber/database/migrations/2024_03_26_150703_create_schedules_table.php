@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->float('amount')->default(0);
-            $table->string('status')->default('scheduled');
+            $table->enum('status', ["scheduled","canceled","completed"])->default('scheduled');
+
             $table->unsignedBigInteger('barbershop_id');
             $table->foreign('barbershop_id')->references('id')->on('barbershops');
 
