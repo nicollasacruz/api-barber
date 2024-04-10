@@ -40,12 +40,14 @@ class BarbershopService
             return [
                 'status' => true,
                 'message' => 'Barbershop created successfully',
+                'data' => $barbershop->load('media'),
             ];
         } catch (Exception $e) {
             Log::error(env('APP_URL') . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             return [
                 'status' => false,
                 'message' => 'Something went wrong',
+                'data' => false,
             ];
         }
     }

@@ -66,6 +66,7 @@ class BarbershopController extends Controller
         return response()->json([
             'status' => $barbershop['status'],
             'message' => $barbershop['message'],
+            'data' => $barbershop['data'],
         ]);
     }
 
