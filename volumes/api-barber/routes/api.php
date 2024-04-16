@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarbershopController;
+use App\Http\Controllers\CashBalanceController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedImageController;
 use App\Http\Controllers\ScheduleController;
@@ -55,7 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/restore/{barber}', [UserController::class, 'restore'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
         });
 
-        Route::prefix('/{barbershop:[0-9]+}/services')->group(function () {
+        Route::prefix('/{barbershop}/services')->group(function () {
             Route::get('/', [ServiceController::class, 'index'])->can('showAny', ['service'])->where('barbershop', '[0-9]+');
             Route::post('/', [ServiceController::class, 'store'])->can('store', ['service'])->where('barbershop', '[0-9]+');
             Route::get('/{service:[0-9]+}', [ServiceController::class, 'show'])->can('show', ['service'])->where('barbershop', '[0-9]+')->where('service', '[0-9]+');
@@ -63,6 +64,12 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/{service:[0-9]+}', [ServiceController::class, 'destroy'])->can('destroy', ['service'])->where('barbershop', '[0-9]+')->where('service', '[0-9]+');
             Route::delete('/forceDelete/{service:[0-9]+}', [ServiceController::class, 'forceDestroy'])->can('forceDestroy', ['service'])->where('barbershop', '[0-9]+')->where('service', '[0-9]+');
             Route::post('/restore/{service:[0-9]+}', [ServiceController::class, 'restore'])->can('restore', ['service'])->where('barbershop', '[0-9]+')->where('service', '[0-9]+');
+        });
+
+        Route::prefix('/{barbershop}/cash-balance')->group(function () {
+            Route::post('/open', [CashBalanceController::class, 'openCashBalance']);
+            Route::post('{cashbalance}/close', [CashBalanceController::class, 'closeCashBalance']);
+            Route::get('/', [CashBalanceController::class, 'getCashBalance']);
         });
     });
     Route::prefix('barbershops/{barbershop:[0-9]+}/schedules')->group(function () {

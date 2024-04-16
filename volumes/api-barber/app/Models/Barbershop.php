@@ -57,9 +57,9 @@ class Barbershop extends Model implements HasMedia
         return $this->belongsTo(User::class, 'receptionist_id', 'id');
     }
 
-    public function manager(): HasOne
+    public function manager(): BelongsTo
     {
-        return $this->hasOne(User::class, 'id', 'manager_id');
+        return $this->belongsTo(User::class, 'manager_id', 'id');
     }
 
     public function schedules(): HasMany

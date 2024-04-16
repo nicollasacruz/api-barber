@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barbershop;
+use App\Models\CashBalance;
 use App\Services\CashBalanceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class CashBalanceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function open(Barbershop $barbershop, Request $request): JsonResponse
+    public function openCashBalance(Barbershop $barbershop, Request $request): JsonResponse
     {
         $data = $request->validate([
             'start_balance' => 'required|numeric',
@@ -39,7 +40,7 @@ class CashBalanceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function close(Barbershop $barbershop, Request $request): JsonResponse
+    public function closeCashBalance(Barbershop $barbershop, CashBalance $cashBalance, Request $request): JsonResponse
     {
         $validateRequest = Validator::make(
             $request->all(),
@@ -58,8 +59,8 @@ class CashBalanceController extends Controller
                 'errors' => $validateRequest->errors()
             ], 401);
         }
-
-        $cashBalance = $this->cashBalanceService->closeCashBalance($validateRequest, $barbershop);
+        $manager = $barbershop->manager;
+        $cashBalance = $this->cashBalanceService->closeCashBalance($request->all(), $barbershop, $cashBalance, $manager);
 
         return response()->json($cashBalance, 200);
     }
@@ -69,7 +70,7 @@ class CashBalanceController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get(Barbershop $barbershop): JsonResponse
+    public function getCashBalance(Barbershop $barbershop): JsonResponse
     {
         $cashBalance = $this->cashBalanceService->getCashBalanceOpen();
 

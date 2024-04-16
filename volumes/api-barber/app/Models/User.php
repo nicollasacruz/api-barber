@@ -67,9 +67,9 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         return $this->hasOne(Barbershop::class, 'receptionist_id', 'id');
     }
 
-    public function barbershopManaged(): BelongsTo
+    public function barbershopManaged(): HasOne
     {
-        return $this->belongsTo(Barbershop::class, 'manager_id', 'id');
+        return $this->hasOne(Barbershop::class, 'manager_id', 'id');
     }
 
     public function clientSchedules(): HasMany

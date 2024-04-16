@@ -28,7 +28,7 @@ class CashBalanceService
         ];
     }
 
-    public function closeCashBalance($data, Barbershop $barbershop)
+    public function closeCashBalance($data, Barbershop $barbershop, CashBalance $cashBalance, User $manager)
     {
         $manager = $barbershop->manager;
         if (!$manager || $manager->email != $data['manager_email']) {
@@ -46,13 +46,6 @@ class CashBalanceService
             ];
         }
 
-        $cashBalance = $this->getCashBalanceOpen();
-
-        if (!$cashBalance['status']) {
-            return $cashBalance;
-        }
-
-        $cashBalance = $cashBalance['data'];
         $cashBalance->update([
             'final_balance' => $data['cash'] + $data['card'],
             'cash' => $data['cash'],
