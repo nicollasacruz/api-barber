@@ -19,11 +19,6 @@ return new class extends Migration
             $table->string('email');
             $table->string('address');
             $table->timestamps();
-            $table->unsignedBigInteger('manager_id')->nullable();
-            $table->unsignedBigInteger('receptionist_id')->nullable();
-
-            $table->foreign('manager_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('receptionist_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 

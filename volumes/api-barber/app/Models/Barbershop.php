@@ -38,8 +38,6 @@ class Barbershop extends Model implements HasMedia
      */
     protected $casts = [
         'name' => 'string',
-        // 'icon' => 'string',
-        // 'cover_image' => 'string',
         'email' => 'string',
         'address' => 'string',
         'created_at' => 'datetime',
@@ -49,27 +47,27 @@ class Barbershop extends Model implements HasMedia
 
     public function barbers(): HasMany
     {
-        return $this->hasMany(User::class, 'barbershop_id', 'id');
+        return $this->hasMany(Barber::class);
     }
 
-    public function receptionist(): BelongsTo
+    public function receptionist(): HasMany
     {
-        return $this->belongsTo(User::class, 'receptionist_id', 'id');
+        return $this->hasMany(Receptionist::class);
     }
 
-    public function manager(): BelongsTo
+    public function manager(): HasMany
     {
-        return $this->belongsTo(User::class, 'manager_id', 'id');
+        return $this->hasMany(Manager::class);
     }
 
     public function schedules(): HasMany
     {
-        return $this->hasMany(Schedule::class, 'barbershop_id', 'id');
+        return $this->hasMany(Schedule::class);
     }
 
     public function cashBalances(): HasMany
     {
-        return $this->hasMany(CashBalance::class, 'barbershop_id', 'id');
+        return $this->hasMany(CashBalance::class);
     }
 }
     

@@ -18,7 +18,7 @@ class Sale extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id',
+        'client_id',
         'receptionist_id',
         'finance_transaction_id',
         'price',
@@ -31,25 +31,20 @@ class Sale extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'user_id' => 'integer',
+        'client_id' => 'integer',
         'receptionist_id' => 'integer',
         'finance_transaction_id' => 'integer',
         'price' => 'decimal:2',
     ];
 
-    public function user(): BelongsTo
+    public function client(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Client::class);
     }
 
     public function receptionist(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function financeTransaction(): BelongsTo
-    {
-        return $this->belongsTo(FinanceTransaction::class);
     }
 
     public function financeTransaction(): HasOne

@@ -22,7 +22,7 @@ class FeedImage extends Model implements HasMedia
         'image',
         'isShow',
         'likes_count',
-        'user_id',
+        'barber_id',
         'url_image',
         'url_preview'
     ];

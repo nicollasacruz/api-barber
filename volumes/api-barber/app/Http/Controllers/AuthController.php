@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client; // Importe o modelo Client
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -36,12 +37,19 @@ class AuthController extends Controller
                 ], 401);
             }
 
+            // Crie o usuário na tabela 'users'
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'contact' => $request->contact,
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
             ]);
+
+            // Crie o registro associado na tabela 'clients'
+            $client = new Client();
+            $client->user_id = $user->id;
+            // Adicione quaisquer outros campos específicos do cliente aqui
+            $client->save();
 
             return response()->json([
                 'status' => true,
@@ -59,7 +67,6 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
     public function login(Request $request)
     {
         try {
@@ -78,21 +85,23 @@ class AuthController extends Controller
                     'errors' => $validateUser->errors()
                 ], 401);
             }
-            
+
+            // Tente autenticar o usuário
             if (!Auth::attempt($request->only(['email', 'password']))) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Email & Password do not match.',
                 ], 401);
             }
-            
+
+            // Se autenticado com sucesso, crie um token para o usuário
             $user = $request->user();
             auth()->user()->tokens()->delete();
 
             $token = $user->createToken(
                 $user->name,
-                [''],
-                Carbon::now()->addHours(6)
+                // [''],
+                // Carbon::now()->addHours(6)
             )->plainTextToken;
 
             return response()->json([
@@ -100,27 +109,6 @@ class AuthController extends Controller
                 'message' => 'User Logged in successfully',
                 'token' => $token
             ], 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
-        }
-    }
-
-
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function logout(Request $request, User $user)
-    {
-        try {
-            auth()->user()->tokens()->delete();
-
-            return response()->json([
-                "message" => "logged out"
-            ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

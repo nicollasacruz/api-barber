@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class User extends Authenticatable implements MustVerifyEmail, HasMedia
+class User extends Authenticatable implements MustVerifyEmail, HasMedia, FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable, InteractsWithMedia;
 
@@ -62,29 +64,9 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         return $this->belongsTo(Barbershop::class, 'barbershop_id', 'id');
     }
 
-    public function barbershopReceptionist(): HasOne
+    public function feedImages(): HasMany
     {
-        return $this->hasOne(Barbershop::class, 'receptionist_id', 'id');
-    }
-
-    public function barbershopManaged(): HasOne
-    {
-        return $this->hasOne(Barbershop::class, 'manager_id', 'id');
-    }
-
-    public function clientSchedules(): HasMany
-    {
-        return $this->hasMany(Schedule::class, 'client_id', 'id');
-    }
-
-    public function schedules(): HasMany
-    {
-        return $this->hasMany(Schedule::class, 'barber_id', 'id');
-    }
-
-    public function services(): BelongsToMany
-    {
-        return $this->belongsToMany(Service::class, 'barber_service', 'barber_id', 'service_id');
+        return $this->hasMany(FeedImage::class);
     }
 
     public function likedImages(): BelongsToMany
@@ -92,18 +74,14 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         return $this->belongsToMany(FeedImage::class, 'likes_users', 'user_id', 'feed_image_id')->withTimestamps();
     }
 
-    public function feedImages(): HasMany
-    {
-        return $this->hasMany(FeedImage::class, 'user_id', 'id');
-    }
-
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
 
-    public function cashBalances(): HasMany
+    public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasMany(CashBalance::class, 'receptionist_id', 'id');
+        return $this->hasRole('admin');
     }
+    
 }

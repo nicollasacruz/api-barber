@@ -15,7 +15,7 @@ return new class extends Migration
 
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->unsigned();
+            $table->foreignId('client_id')->constrained()->unsigned();
             $table->foreignId('receptionist_id')->constrained()->unsigned();
             $table->foreignId('finance_transaction_id')->constrained()->unsigned();
             $table->decimal('price', 10, 2);

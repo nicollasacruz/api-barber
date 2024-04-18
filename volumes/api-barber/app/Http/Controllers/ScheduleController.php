@@ -28,7 +28,7 @@ class ScheduleController extends Controller
         $this->authorize('store', Schedule::class);
     
         $request->validate([
-            'date_scheduled' => 'required|date',
+            'date_scheduled' => 'required|date|min:' . now(),
             'barber_id' => 'required|integer',
             'client_id' => 'required|integer',
             'service_id' => ['required', 'integer', function ($attribute, $value, $fail) {

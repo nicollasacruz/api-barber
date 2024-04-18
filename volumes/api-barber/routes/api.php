@@ -50,7 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/{barber}', [UserController::class, 'showBarber'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
             Route::patch('/{barber}', [UserController::class, 'updateBarber'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
             Route::post('/{barber}/schedule', [UserController::class, 'scheduleService'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
-            Route::post('/{barber}/available-schedules', [UserController::class, 'getAvailableSchedules'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
+            Route::get('/{barber}/available-schedules', [UserController::class, 'getAvailableSchedules'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
             Route::delete('/{barber}', [UserController::class, 'destroy'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
             Route::delete('/forceDelete/{barber}', [UserController::class, 'forceDestroy'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');
             Route::post('/restore/{barber}', [UserController::class, 'restore'])->where('barbershop', '[0-9]+')->where('barber', '[0-9]+');

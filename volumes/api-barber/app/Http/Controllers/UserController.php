@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barber;
 use App\Models\Barbershop;
+use App\Models\Client;
 use App\Models\Schedule;
 use App\Models\Service;
 use App\Models\User;
@@ -45,14 +47,18 @@ class UserController extends Controller
             ], 401);
         }
 
-        $barber = User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'barbershop_id' => $barbershop->id
         ]);
 
-        $barber->role = ["barber", "user"];
+        $user->role = ["barber", "user"];
+        $user->save();
+        $barber = new Barber();
+        $barber->user_id = $user->id;
+        $barber->barbershop_id = $barbershop->id;
         $barber->save();
 
         if ($request->services) {
@@ -63,7 +69,7 @@ class UserController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Barber Created Successfully',
-            'data' => $barber
+            'data' => $user
         ], 200);
     }
 
@@ -79,13 +85,13 @@ class UserController extends Controller
         ]);
     }
 
-    public function updateBarber(Request $request, Barbershop $barbershop, User $barber)
+    public function update(Request $request, Barbershop $barbershop, Barber $barber)
     {
         $validateUser = Validator::make(
             $request->all(),
             [
                 'name' => 'required',
-                'email' => 'required|email|unique:users,email,' . $barber->id,
+                'email' => 'required|email|unique:users,email,' . $barber->user->id,
                 'services' => ['array', function ($attribute, $value, $fail) {
                     $existingServiceIds = Service::pluck('id')->toArray();
                     foreach ($value as $serviceId) {
@@ -105,7 +111,7 @@ class UserController extends Controller
             ], 401);
         }
 
-        $barber->fill([
+        $barber->user->fill([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'barbershop_id' => $barbershop->id,
@@ -141,7 +147,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function getAvailableSchedules(BarbershopService $barbershopService, Request $request, Barbershop $barbershop, User $barber): JsonResponse
+    public function getAvailableSchedules(BarbershopService $barbershopService, Request $request, Barbershop $barbershop, Barber $barber): JsonResponse
     {
         $duration = $request->duration;
         $interval = 15;
@@ -210,19 +216,19 @@ class UserController extends Controller
         return true;
     }
 
-    public function scheduleService(Request $request, Barbershop $barbershop, User $barber)
+    public function scheduleService(Request $request, Barbershop $barbershop, Barber $barber)
     {
         $validateUser = Validator::make(
             $request->all(),
             [
                 'date_scheduled' => 'required|date',
-                'client_id' => ['required|integer', function ($attribute, $value, $fail) {
-                    $existingClientIds = User::pluck('id')->toArray();
+                'client_id' => ['required', function ($attribute, $value, $fail) {
+                    $existingClientIds = Client::pluck('id')->toArray();
                     if (!in_array($value, $existingClientIds)) {
                         $fail("The $attribute $value selected does not exist.");
                     }
                 }],
-                'service_id' => ['required|integer', function ($attribute, $value, $fail) {
+                'service_id' => ['required', function ($attribute, $value, $fail) {
                     $existingServiceIds = Service::pluck('id')->toArray();
                     if (!in_array($value, $existingServiceIds)) {
                         $fail("The $attribute $value selected does not exist.");
