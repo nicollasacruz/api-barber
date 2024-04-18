@@ -8,4 +8,19 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    resolve: {
+        alias: {
+            "@": "/resources/js",
+        },
+    },
+    server: {
+        hmr: {
+            host: "localhost",
+        },
+    },
+    watch: {
+        hmr: {
+            host: "localhost",
+        },
+    },
 });
