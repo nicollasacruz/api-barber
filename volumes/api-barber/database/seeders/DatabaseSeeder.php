@@ -8,6 +8,7 @@ use App\Models\Barbershop;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,11 +28,18 @@ class DatabaseSeeder extends Seeder
         $receptionist = User::factory()->create([
             'role' => ['user', 'receptionist'],
             'barbershop_id' =>  $barbershop->id,
+            'password' => Hash::make('123'),
         ]);
         $manager = User::factory()->create([
             'role' => ['user', 'manager'],
             'barbershop_id' =>  $barbershop->id,
+            'password' => Hash::make('123'),
         ]);
+
+        $barbershop->receptionist()->attach($receptionist);
+        $barbershop->barber()->attach($barber);
+        $barbershop->manager()->attach($manager);
+        
         Service::factory(3)->create([
             'barbershop_id' =>  $barbershop->id,
         ]);

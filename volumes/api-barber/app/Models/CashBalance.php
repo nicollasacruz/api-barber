@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\FinanceTransaction;
 
 class CashBalance extends Model
 {
@@ -61,6 +62,11 @@ class CashBalance extends Model
 
     public function financeTransactions(): HasMany
     {
-        return $this->hasMany(FinanceTransaction::class);
+        return $this->hasMany(FinanceTransaction::class, 'cash_balance_id', 'id');
+    }
+
+    public function barbershop(): BelongsTo
+    {
+        return $this->belongsTo(Barbershop::class);
     }
 }

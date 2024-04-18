@@ -7,6 +7,7 @@ use App\Models\CashBalance;
 use App\Services\CashBalanceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class CashBalanceController extends Controller
@@ -25,6 +26,13 @@ class CashBalanceController extends Controller
      */
     public function openCashBalance(Barbershop $barbershop, Request $request): JsonResponse
     {
+        if (Auth::user()->role !== 'receptionist' && $barbershop->id !== Auth::user()->barbershop_id) {
+            return response()->json([
+                'status' => false,
+                'message' => 'You are not allowed to open cash balance',
+            ], 401);
+        }
+
         $data = $request->validate([
             'start_balance' => 'required|numeric',
         ]);

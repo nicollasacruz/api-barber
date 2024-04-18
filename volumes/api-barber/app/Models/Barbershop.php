@@ -66,5 +66,10 @@ class Barbershop extends Model implements HasMedia
     {
         return $this->hasMany(Schedule::class, 'barbershop_id', 'id');
     }
+
+    public function cashBalances(): HasMany
+    {
+        return $this->hasMany(CashBalance::class, 'barbershop_id', 'id');
+    }
 }
     

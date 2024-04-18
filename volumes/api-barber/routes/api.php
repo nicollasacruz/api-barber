@@ -67,9 +67,9 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         Route::prefix('/{barbershop}/cash-balance')->group(function () {
-            Route::post('/open', [CashBalanceController::class, 'openCashBalance']);
-            Route::post('{cashbalance}/close', [CashBalanceController::class, 'closeCashBalance']);
             Route::get('/', [CashBalanceController::class, 'getCashBalance']);
+            Route::post('/open', [CashBalanceController::class, 'openCashBalance']);
+            Route::post('{cashBalance}/close', [CashBalanceController::class, 'closeCashBalance']);
         });
     });
     Route::prefix('barbershops/{barbershop:[0-9]+}/schedules')->group(function () {

@@ -14,6 +14,14 @@ class CashBalanceService
 {
     public function openCashBalance($data, Barbershop $barbershop)
     {
+        if ($barbershop->cashBalances()->where('status', 'open')->count() > 0) {
+            return [
+                'status' => false,
+                'message' => 'Cash balance already opened today',
+              
+                'data' => false,
+            ];
+        }
         $cashBalance = CashBalance::create([
             'start_date' => now(),
             'status' => 'open',
@@ -30,6 +38,14 @@ class CashBalanceService
 
     public function closeCashBalance($data, Barbershop $barbershop, CashBalance $cashBalance, User $manager)
     {
+        if ($cashBalance->status == 'closed') {
+            return [
+                'status' => false,
+                'message' => 'Cash balance already closed',
+                'data' => false,
+            ];
+        }
+
         $manager = $barbershop->manager;
         if (!$manager || $manager->email != $data['manager_email']) {
             return [
@@ -45,9 +61,10 @@ class CashBalanceService
                 'data' => false,
             ];
         }
-
+        $financeTransactions = $cashBalance->financeTransactions()->get();
         $cashBalance->update([
             'final_balance' => $data['cash'] + $data['card'],
+            'balance' => $cashBalance->start_balance + $cashBalance->financeTransactions()->sum('amount'),
             'cash' => $data['cash'],
             'card' => $data['card'],
             'end_date' => now(),
@@ -58,7 +75,7 @@ class CashBalanceService
         return [
             'status' => true,
             'message' => 'Cash balance closed successfully',
-            'data' => $cashBalance,
+            'data' => $cashBalance->toArray(),
         ];
     }
 

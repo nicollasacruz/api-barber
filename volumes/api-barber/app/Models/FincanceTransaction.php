@@ -50,7 +50,7 @@ class FinanceTransaction extends Model
 
     public function cashBalance(): BelongsTo
     {
-        return $this->belongsTo(CashBalance::class);
+        return $this->belongsTo(CashBalance::class, 'cash_balance_id', 'id');
     }
 
     public function sale(): BelongsTo
@@ -71,10 +71,5 @@ class FinanceTransaction extends Model
     public function commissionPayment(): BelongsTo
     {
         return $this->belongsTo(CommissionPayment::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 }
