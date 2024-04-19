@@ -33,7 +33,7 @@ class FeedImageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, User $barber)
+    public function store(Request $request, User $user)
     {
         $data = $request->validate([
             'subtitle' => 'string|nullable',
@@ -43,13 +43,13 @@ class FeedImageController extends Controller
         $image = $request->file('image');
         if ($image) {
             $image_name = $image->getBasename() . '_image.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/images/feedImages/barber_' . $barber->id, $image_name);
+            $image->storeAs('public/images/feedImages/barber_' . $user->id, $image_name);
         }
 
         $feedImage = FeedImage::create([
             'subtitle' => $request->subtitle,
-            'image' =>  'public/images/feedImages/barber_' . $barber->id . '/' . $image_name,
-            'user_id' => $barber->id,
+            'image' =>  'public/images/feedImages/barber_' . $user->id . '/' . $image_name,
+            'user_id' => $user->id,
             'likes_count' => 0,
         ]);
 

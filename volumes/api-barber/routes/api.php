@@ -85,16 +85,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('feed')->group(function () {
         Route::get('barbershop/{barbershop}/all', [FeedImageController::class, 'getAllFeedImagesByBarbershop'])->where('barbershop', '[0-9]+');
-        Route::post('/barber/{barber}', [FeedImageController::class, 'store'])->where('barber', '[0-9]+');
+        Route::post('/barber/{user}', [FeedImageController::class, 'store'])->where('user', '[0-9]+');
         Route::get('/{feedImage}', [FeedImageController::class, 'show'])->where('feedImage', '[0-9]+');
         Route::patch('/{feedImage}', [FeedImageController::class, 'update'])->where('feedImage', '[0-9]+');
-        Route::delete('/{barber}', [FeedImageController::class, 'destroy'])->can('destroy', ['barber']);
-        Route::delete('/forceDelete/{barber}', [FeedImageController::class, 'forceDestroy']);
-        Route::post('/restore/{barber}', [FeedImageController::class, 'restore']);
+        Route::delete('/{user}', [FeedImageController::class, 'destroy'])->can('destroy', ['user'])->where('user', '[0-9]+');
+        Route::delete('/forceDelete/{user}', [FeedImageController::class, 'forceDestroy'])->where('user', '[0-9]+');
+        Route::post('/restore/{user}', [FeedImageController::class, 'restore'])->where('user', '[0-9]+');
 
         Route::get('/{feedImage}/commenters', [CommentController::class, 'index'])->where('feedImage', '[0-9]+');
         Route::post('/{feedImage}/commenters', [CommentController::class, 'store'])->where('feedImage', '[0-9]+');
+        Route::patch('/commenters/{commenter}', [CommentController::class, 'update'])->where('feedImage', '[0-9]+')->where('commenter', '[0-9]+');
+        Route::delete('/commenters/{commenter}', [CommentController::class, 'delete'])->where('feedImage', '[0-9]+')->where('commenter', '[0-9]+');
     });
-
-    
 });
